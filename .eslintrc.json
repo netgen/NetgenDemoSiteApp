@@ -1,8 +1,14 @@
 {
     "extends": "airbnb",
+    "parser": "babel-eslint",
     "plugins": [
         "react",
+        "react-native",
         "jsx-a11y",
         "import"
-    ]
+    ],
+    "rules": {
+      "react/jsx-filename-extension": 0,
+      "react/prefer-stateless-function": 1
+    }
 }
