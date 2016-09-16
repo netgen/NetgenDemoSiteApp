@@ -23,9 +23,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         isFetching: false,
         error: null,
-        fetchedArticles: action.articles.map(article => ({
-          [article.value.Content.Name]: article.value.Content,
-        })).reduce(arrayToObject, state.fetchedArticles),
+        // TODO: For now, resets previously fetched articles object -> should be changed in future
+        // Also, articles should be put in theirs own category
+        fetchedArticles: action.articles.reduce(arrayToObject, state.fetchedArticles),
       };
     }
     case types.FETCH_ARTICLE_BY_ID_SUCCESS: {

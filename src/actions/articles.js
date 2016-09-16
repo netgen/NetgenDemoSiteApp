@@ -9,7 +9,7 @@ export const FETCH_ARTICLES_SUCCESS = 'FETCH_ARTICLES_SUCCESS';
 export const FETCH_ARTICLES_FAILURE = 'FETCH_ARTICLES_FAILURE';
 
 
-const ngRestCAPI = new NetgenRestClient({ endPointUrl: 'http://example.com/api/ezp/v2/' });
+const ngRestCAPI = new NetgenRestClient({ endPointUrl: 'http://example.com' });
 
 export function fetchArticles(numberOfArticles, category) {
   return async (dispatch, getState) => {
@@ -17,8 +17,7 @@ export function fetchArticles(numberOfArticles, category) {
 
     dispatch({ type: FETCH_ARTICLES_REQUEST });
     try {
-      const { View: response } = await ngRestCAPI.getArticles(numberOfArticles, category);
-      const articles = response.Result.searchHits.searchHit;
+      const articles = await ngRestCAPI.getArticles(numberOfArticles, category);
       dispatch({ type: FETCH_ARTICLES_SUCCESS, articles });
     } catch (error) {
       dispatch({ type: FETCH_ARTICLES_FAILURE, error });
