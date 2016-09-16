@@ -2,46 +2,37 @@
   App main screen container
 */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+import { fetchArticles, fetchArticleByID } from '../actions/articles';
+import ArticlesListView from '../components/ArticlesListView';
 
 class Main extends Component {
+  static propTypes = {
+    articles: PropTypes.object.isRequired,
+    category: PropTypes.string, // Probably the same component will be used for every news category
+    dispatch: PropTypes.func.isRequired,
+  };
+
+  constructor(props) {
+    super(props);
+  }
+
+  _fetchArticleByID(articleID = 372) {
+    const { dispatch } = this.props;
+    dispatch(fetchArticleByID(articleID));
+  }
+
+  _fetchArticles(numberOfArticles, category) {
+    const { dispatch } = this.props;
+    dispatch(fetchArticles(numberOfArticles, category));
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to Netgen More Site App!
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
+      <ArticlesListView
+        articles={this.props.articles.fetchedArticles}
+        fetchArticles={this._fetchArticles.bind(this)} />
     );
   }
 }
