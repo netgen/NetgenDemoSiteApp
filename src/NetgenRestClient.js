@@ -24,7 +24,7 @@ export default class NetgenRestClient {
   async getArticleByID(objectID, imageVariation) {
     if (!objectID) throw "Object ID not defined";
 
-    const { Content: article } = await this._fetchArticleByID(objectID);
+    const { Content: article } = await this._fetchObjectByID(objectID);
     const image = await this.getArticleImageUrl(article, imageVariation);
 
     return {
@@ -85,8 +85,8 @@ export default class NetgenRestClient {
     return response.json();
   }
 
-  async _fetchArticleByID(objectID) {
-    const requestUrl = `${this.endPointUrl}${this.apiPath}content/objects/${objectID}`;
+  async _fetchObjectByID(objectContentID) {
+    const requestUrl = `${this.endPointUrl}${this.apiPath}content/objects/${objectContentID}`;
     const response = await fetch(requestUrl, {
       method: 'GET',
       headers: {
