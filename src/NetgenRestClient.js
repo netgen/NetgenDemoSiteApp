@@ -61,6 +61,20 @@ export default class NetgenRestClient {
     return `${this.endPointUrl}${imageVariationUri || imageUri}`;
   }
 
+  async getCategories(siteInfoContentID) {
+    if (!siteInfoContentID) throw "Site info content ID not provided";
+
+    const { Content: siteInfo } = await this._fetchObjectByID(siteInfoContentID);
+    const mainMenuItems = siteInfo.CurrentVersion.Version.Fields.field.find(el => el.fieldDefinitionIdentifier === 'main_menu').fieldValue;
+    const categories = await this._fetchCategories(mainMenuItems.destinationContentIds);
+
+    return categories.map(category => ({
+        name: category.Content.Name,
+        mainLocation: category.Content.MainLocation._href,
+      })
+    );
+  }
+
   async _fetchArticles(numberOfItems = 10, category = 'ng_news') {
     const requestUrl = `${this.endPointUrl}${this.apiPath}views`;
     const response = await fetch(requestUrl, {
@@ -123,5 +137,13 @@ export default class NetgenRestClient {
     });
 
     return response.blob();
+  }
+
+  _fetchCategories(destinationContentIds) {
+    const categoriesPromises = destinationContentIds.map((contentID) => {
+        return this._fetchObjectByID(contentID);
+    }, this);
+
+    return Promise.all(categoriesPromises);
   }
 }
