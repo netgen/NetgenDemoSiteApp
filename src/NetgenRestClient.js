@@ -75,8 +75,9 @@ export default class NetgenRestClient {
     );
   }
 
-  async _fetchArticles(numberOfItems = 10, category = 'ng_news') {
+  async _fetchArticles(numberOfItems = 10, categories = ['ng_news', 'ng_article', 'ng_blog_post', 'ng_video']) {
     const requestUrl = `${this.endPointUrl}${this.apiPath}views`;
+    const contentTypeCriterion = this._buildContentTypeCriterion(categories);
     const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
@@ -85,9 +86,9 @@ export default class NetgenRestClient {
       },
       body: JSON.stringify({
           "ViewInput": {
-            "identifier": `${category}_view`,
+            "identifier": 'fetch_articles_view',
             "ContentQuery": {
-              "Criteria": { "ContentTypeIdentifierCriterion": category },
+              "Criteria": contentTypeCriterion,
               "limit": numberOfItems,
               "offset": "0",
               "SortClauses": { "DatePublished": "descending" }
@@ -145,5 +146,14 @@ export default class NetgenRestClient {
     }, this);
 
     return Promise.all(categoriesPromises);
+  }
+
+  _buildContentTypeCriterion(categories, criterionObject = {}) {
+      if (!categories.length) return criterionObject;
+
+      criterionObject.OR = {};
+      criterionObject.OR.ContentTypeIdentifierCriterion = categories.shift();
+      criterionObject.OR = this._buildContentTypeCriterion(categories, criterionObject.OR);
+      return criterionObject;
   }
 }
