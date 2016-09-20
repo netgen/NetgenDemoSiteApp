@@ -45,12 +45,12 @@ export default class NetgenRestClient {
 
   async getArticleImageUrl(article, variation) {
     const articleFields = article.CurrentVersion.Version.Fields.field;
-    const imageField = articleFields.find(el => el.fieldDefinitionIdentifier === 'image').fieldValue;
+    const imageField = articleFields.find(el => el.fieldDefinitionIdentifier === 'image');
 
-    if (!imageField) return;
+    if (!imageField || !imageField.fieldValue) return;
 
-    const imageUri = imageField.uri;
-    const imageVariation = imageField.variations[variation];
+    const imageUri = imageField.fieldValue.uri;
+    const imageVariation = imageField.fieldValue.variations[variation];
 
     let imageVariationUri = '';
     if (imageVariation && imageVariation.href) {
