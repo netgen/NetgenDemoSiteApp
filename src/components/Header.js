@@ -27,8 +27,9 @@ const styles = StyleSheet.create({
 
 export default class Header extends Component {
   static propTypes = {
-    onMenuClick: PropTypes.func,
-    onSearchClick: PropTypes.func,
+    isMenuOpened: PropTypes.bool.isRequired,
+    onPressMenu: PropTypes.func.isRequired,
+    onSearchPress: PropTypes.func,
   };
 
   constructor(props) {
@@ -37,11 +38,12 @@ export default class Header extends Component {
   }
 
   render() {
-    const leftIcon = this.state.menuOpened ? 'cross' : 'menu';
+    const { isMenuOpened, onPressMenu } = this.props;
+    const leftIcon = isMenuOpened ? 'cross' : 'menu';
 
     return (
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => this.setState({ menuOpened: !this.state.menuOpened })}>
+        <TouchableOpacity onPress={() => onPressMenu()}>
           <Icon
             name={leftIcon}
             size={40}
