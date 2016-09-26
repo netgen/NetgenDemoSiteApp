@@ -39,10 +39,6 @@ export default class ArticlesListView extends Component {
     };
   }
 
-  componentWillMount() {
-    this.props.fetchArticles(12);
-  }
-
   componentWillReceiveProps(nextProps) {
     const data = this._generateArticleRows(nextProps);
     this.setState({
@@ -52,23 +48,34 @@ export default class ArticlesListView extends Component {
 
   render() {
     return (
-      <View style={{paddingTop: 30}}>
-        <ListView
-          dataSource={this.state.dataSource || []}
-          enableEmptySections={true}
-          renderRow={this._renderRow.bind(this)} />
-      </View>
+      <ListView
+        dataSource={this.state.dataSource || []}
+        enableEmptySections={true}
+        renderRow={this._renderRow}
+        renderSeparator={this._renderSeparator} />
     );
   }
 
   _renderRow(rowData, sectionID, rowID) {
     return (
       <View style={styles.row}>
-        <Image style={styles.image} source={{ uri: rowData.image}}></Image>
+        <Image style={styles.image} source={{ uri: rowData.image }}></Image>
         <Text style={styles.text}>
           {rowData.title}
         </Text>
       </View>
+    );
+  }
+
+  _renderSeparator(sectionID, rowID) {
+    return (
+      <View
+        key={`${rowID}`}
+        style={{
+          height: 1,
+          backgroundColor: '#CCCCCC',
+        }}
+      />
     );
   }
 
