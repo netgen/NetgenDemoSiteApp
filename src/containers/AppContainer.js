@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { fetchArticles, fetchArticleByID } from '../actions/articles';
 import { fetchCategories } from '../actions/categories';
 import { View, StyleSheet } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Header from '../components/Header';
 import SideNavigation from '../components/SideNavigation';
 import ArticlesListView from '../components/ArticlesListView';
@@ -27,9 +28,21 @@ class AppContainer extends Component {
 
   constructor(props) {
     super(props);
-    this.state={ menuOpened: false };
+    this.state = {
+      appLoaded: false,
+      menuOpened: false,
+    };
     this.props.dispatch(fetchCategories(63));
     this.props.dispatch(fetchArticles(10));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const articles = nextProps.articles.fetchedArticles;
+    const categories = nextProps.categories.items;
+
+    if (Object.keys(articles).length && categories.length) {
+      this.setState({ appLoaded: true });
+    }
   }
 
   _fetchArticleByID(articleID = 372) {
@@ -58,6 +71,9 @@ class AppContainer extends Component {
         <Header
           isMenuOpened={this.state.menuOpened}
           onPressMenu={this._onPressMenu.bind(this)} />
+        <Spinner
+          visible={!this.state.appLoaded}
+          overlayColor="#ef4134" />
         <SideNavigation
           isOpen={this.state.menuOpened}
           categories={categories}
