@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
 export default class SideNavigationMenu extends Component {
   static propTypes = {
     items: PropTypes.array.isRequired,
+    navigate: PropTypes.func.isRequired,
     language: PropTypes.string,
   };
 
@@ -42,7 +43,8 @@ export default class SideNavigationMenu extends Component {
     return items.map((item, index) => (
             <SideNavigationItem
               key={item.mainLocation}
-              item={item.name} />
+              item={item.name}
+              navigate={this.props.navigate} />
           ));
   }
 }

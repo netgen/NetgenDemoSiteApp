@@ -1,16 +1,10 @@
-/*
-  App main screen container
-*/
-
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { fetchArticles, fetchArticleByID } from '../actions/articles';
 import { fetchCategories } from '../actions/categories';
 import { View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Header from '../components/Header';
-import SideNavigation from '../components/SideNavigation';
-import ArticlesListView from '../components/ArticlesListView';
+import Navigation from '../components/Navigation';
 
 
 const styles = StyleSheet.create({
@@ -33,7 +27,6 @@ class AppContainer extends Component {
       menuOpened: false,
     };
     this.props.dispatch(fetchCategories(63));
-    this.props.dispatch(fetchArticles(10));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,26 +38,12 @@ class AppContainer extends Component {
     }
   }
 
-  _fetchArticleByID(articleID = 372) {
-    const { dispatch } = this.props;
-    dispatch(fetchArticleByID(articleID));
-  }
-
-  _fetchArticles(numberOfArticles, category) {
-    const { dispatch } = this.props;
-    dispatch(fetchArticles(numberOfArticles, category));
-  }
-
   _onPressMenu() {
     this.setState({ menuOpened: !this.state.menuOpened });
   }
 
   render() {
     const { articles, categories } = this.props;
-    const articlesList =
-          <ArticlesListView
-              articles={this.props.articles.fetchedArticles}
-              fetchArticles={this._fetchArticles.bind(this)} />;
 
     return (
       <View style={styles.container}>
@@ -74,11 +53,11 @@ class AppContainer extends Component {
         <Spinner
           visible={!this.state.appLoaded}
           overlayColor="#ef4134" />
-        <SideNavigation
+        <Navigation
+          ref="navigation"
           isOpen={this.state.menuOpened}
-          categories={categories}
-          currentView={articlesList} >
-        </SideNavigation>
+          onPressMenu={this._onPressMenu.bind(this)}
+          categories={categories.items} />
       </View>
     );
   }

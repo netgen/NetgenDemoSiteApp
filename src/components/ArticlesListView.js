@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
 export default class ArticlesListView extends Component {
   static propTypes = {
     articles: PropTypes.object.isRequired,
-    fetchArticles: PropTypes.func.isRequired,
   };
 
   constructor(props) {
