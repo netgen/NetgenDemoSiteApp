@@ -11,14 +11,14 @@ export const FETCH_ARTICLES_FAILURE = 'FETCH_ARTICLES_FAILURE';
 
 const ngRestCAPI = new NetgenRestClient({ endPointUrl: 'http://example.com' });
 
-export function fetchArticles(numberOfArticles, category) {
+export function fetchArticles(numberOfArticles, parentLocationID, contentTypes, imageVariation) {
   return async (dispatch, getState) => {
-    if (!shouldFetch(getState())) return;
+    if (!shouldFetch(getState(), parentLocationID)) return;
 
-    dispatch({ type: FETCH_ARTICLES_REQUEST });
+    dispatch({ type: FETCH_ARTICLES_REQUEST, parentLocationID });
     try {
-      const articles = await ngRestCAPI.getArticles(numberOfArticles, category);
-      dispatch({ type: FETCH_ARTICLES_SUCCESS, articles });
+      const articles = await ngRestCAPI.getArticles(numberOfArticles, parentLocationID, contentTypes, imageVariation);
+      dispatch({ type: FETCH_ARTICLES_SUCCESS, articles, parentLocationID });
     } catch (error) {
       dispatch({ type: FETCH_ARTICLES_FAILURE, error });
     }
@@ -40,13 +40,11 @@ export function fetchArticleByID(id) {
 }
 
 
-function shouldFetch(state) {
+function shouldFetch(state, parentLocationID) {
   const articles = state.articles;
 
   if (!articles) return true;
-  if (articles.isFetching) return false;
-  // TODO: For now, only prevents simultaneous fetch calls on server.
-  // In future it should check if articles of specified category are already fetched.
-  // Futhermore, should check if article already exists in store when making single fetch.
+  if (articles.isFetching[parentLocationID]) return false;
+  if (!articles.fetchedArticles[parentLocationID]) return true;
   return true;
 }

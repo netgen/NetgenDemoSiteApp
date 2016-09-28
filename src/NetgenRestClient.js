@@ -8,16 +8,15 @@ export default class NetgenRestClient {
     this.acceptHeader = props.acceptHeader || 'application/vnd.ez.api.';
   }
 
-  async getArticles(numberOfItems, category, imageVariation) {
-    const { View: response } = await this._fetchArticles(numberOfItems, category);
+  async getArticles(numberOfItems, parentLocationID, contentTypes, imageVariation) {
+    const { View: response } = await this._fetchArticles(numberOfItems, parentLocationID, contentTypes);
     const articles = response.Result.searchHits.searchHit.map(result => result.value.Content);
     const images = await this.getArticlesImageUrls(articles, imageVariation);
 
     return articles.map((article, index) => ({
-        [article.Name]: {
-          content: article,
-          image: images[index],
-        }
+      name: article.Name,
+      content: article,
+      image: images[index],
     }));
   }
 
@@ -70,14 +69,17 @@ export default class NetgenRestClient {
 
     return categories.map(category => ({
         name: category.Content.Name,
+        locationId: /[^/]*$/.exec(category.Content.MainLocation._href)[0], // Grabs string after last dash
         mainLocation: category.Content.MainLocation._href,
       })
     );
   }
 
-  async _fetchArticles(numberOfItems = 10, categories = ['ng_news', 'ng_article', 'ng_blog_post', 'ng_video']) {
+  async _fetchArticles(numberOfItems = 10, parentLocationID, contentTypes = ['ng_news', 'ng_article', 'ng_blog_post', 'ng_video']) {
     const requestUrl = `${this.endPointUrl}${this.apiPath}views`;
-    const contentTypeCriterion = this._buildContentTypeCriterion(categories);
+    const criterionObject = parentLocationID ? { "ParentLocationIdCriterion": parentLocationID } : {};
+    const contentTypeCriterion = this._buildContentTypeCriterion(contentTypes, criterionObject);
+
     const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
@@ -148,12 +150,12 @@ export default class NetgenRestClient {
     return Promise.all(categoriesPromises);
   }
 
-  _buildContentTypeCriterion(categories, criterionObject = {}) {
-      if (!categories.length) return criterionObject;
+  _buildContentTypeCriterion(contentTypes, criterionObject = {}) {
+      if (!contentTypes.length) return criterionObject;
 
       criterionObject.OR = {};
-      criterionObject.OR.ContentTypeIdentifierCriterion = categories.shift();
-      criterionObject.OR = this._buildContentTypeCriterion(categories, criterionObject.OR);
+      criterionObject.OR.ContentTypeIdentifierCriterion = contentTypes.shift();
+      criterionObject.OR = this._buildContentTypeCriterion(contentTypes, criterionObject.OR);
       return criterionObject;
   }
 }

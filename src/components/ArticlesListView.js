@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 
 export default class ArticlesListView extends Component {
   static propTypes = {
-    articles: PropTypes.object.isRequired,
+    articles: PropTypes.array.isRequired,
   };
 
   constructor(props) {
@@ -80,12 +80,10 @@ export default class ArticlesListView extends Component {
 
   _generateArticleRows(props) {
     const { articles } = props;
-    const rowData = [];
 
-    for (let article in articles) {
-      rowData.push({ title: article, image: articles[article].image });
-    }
-
-    return rowData;
+    return articles.map(article => ({
+        title: article.name,
+        image: article.image
+    }));
   }
 }

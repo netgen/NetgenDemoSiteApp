@@ -1,49 +1,44 @@
 import * as types from '../actions/articles';
-import { arrayToObject } from '../utils/helper.js';
-
 
 const INITIAL_STATE = {
-  isFetching: false,
+  isFetching: {},
   fetchedArticles: {},
   error: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
-    case types.FETCH_ARTICLES_REQUEST:
-    case types.FETCH_ARTICLE_BY_ID_REQUEST: {
+    case types.FETCH_ARTICLES_REQUEST: {
       return {
         ...state,
-        isFetching: true,
+        isFetching: {
+          ...state.isFetching,
+          [action.parentLocationID]: true,
+        },
         error: null,
       };
     }
     case types.FETCH_ARTICLES_SUCCESS: {
       return {
         ...state,
-        isFetching: false,
-        error: null,
-        // TODO: For now, resets previously fetched articles object -> should be changed in future
-        // Also, articles should be put in theirs own category
-        fetchedArticles: action.articles.reduce(arrayToObject, state.fetchedArticles),
-      };
-    }
-    case types.FETCH_ARTICLE_BY_ID_SUCCESS: {
-      return {
-        ...state,
-        isFetching: false,
+        isFetching: {
+          ...state.isFetching,
+          [action.parentLocationID]: false,
+        },
         fetchedArticles: {
           ...state.fetchedArticles,
-          [action.article.Name]: action.article,
+          [action.parentLocationID]: action.articles,
         },
         error: null,
       };
     }
-    case types.FETCH_ARTICLES_FAILURE:
-    case types.FETCH_ARTICLE_BY_ID_FAILURE: {
+    case types.FETCH_ARTICLES_FAILURE: {
       return {
         ...state,
-        isFetching: false,
+        isFetching: {
+          ...state.isFetching,
+          [action.parentLocationID]: false,
+        },
         error: action.error,
       };
     }
