@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { fetchCategories } from '../actions/categories';
+import { fetchArticles } from '../actions/articles';
 import { View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Header from '../components/Header';
@@ -26,14 +27,22 @@ class AppContainer extends Component {
       appLoaded: false,
       menuOpened: false,
     };
-    this.props.dispatch(fetchCategories(63));
+    props.dispatch(fetchCategories(63));
   }
 
   componentWillReceiveProps(nextProps) {
-    const articles = nextProps.articles.fetchedArticles;
+    const { articles, dispatch } = nextProps;
     const categories = nextProps.categories.items;
+    const numOfCategories = categories.length;
 
-    if (Object.keys(articles).length && categories.length) {
+    // If categories have been fetched
+    if (numOfCategories && numOfCategories !== this.props.categories.items.length) {
+      for (let i = 0; i < numOfCategories; i++) {
+        dispatch(fetchArticles(10, categories[i].locationId));
+      }
+    }
+
+    if (numOfCategories && numOfCategories === Object.keys(articles.fetchedArticles).length) {
       this.setState({ appLoaded: true });
     }
   }

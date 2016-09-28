@@ -47,7 +47,7 @@ export default class SideNavigation extends Component {
 
         <Navigator
           ref="navigator"
-          initialRoute={{ name: 'Articles list', category: 'All', index: 0 }}
+          initialRoute={{ name: 'Articles list', index: 0 }}
           renderScene={this.renderScene} />
 
       </Drawer>

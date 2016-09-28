@@ -42,8 +42,8 @@ export default class SideNavigationMenu extends Component {
   _renderItems(items) {
     return items.map((item, index) => (
             <SideNavigationItem
-              key={item.mainLocation}
-              item={item.name}
+              key={item.locationId}
+              item={item}
               navigate={this.props.navigate} />
           ));
   }

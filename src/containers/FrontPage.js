@@ -14,10 +14,7 @@ class FrontPage extends Component {
 
   constructor(props) {
     super(props);
-  }
-
-  componentWillMount() {
-    this.props.dispatch(fetchArticles(10));
+    this.state = {};
   }
 
   /* On category change update articles
@@ -28,14 +25,50 @@ class FrontPage extends Component {
     }
   }*/
 
-  render() {
-    const { articles } = this.props;
+  componentDidMount() {
+    if (this.props.category) { this.setState({ shouldUpdate: true }) }
+  }
 
-    // TODO: Later should pass only articles of selected category
-    // If no category, pick first N of all categories
+  getLatestArticles(numberOfArticles = 10) {
+    const { articles } = this.props;
+    let allArticles = [];
+
+    for (category in articles.fetchedArticles) {
+      allArticles = allArticles.concat(articles.fetchedArticles[category]);
+    }
+
+    return this.sortArticles(allArticles).slice(0,numberOfArticles);
+  }
+
+  getArticlesByCategory(numberOfArticles = 10) {
+    const { articles, category } = this.props;
+
+    return articles.fetchedArticles[parseInt(category)];
+  }
+
+  sortArticles(articles) {
+    return articles.sort((a, b) => {
+      if (a.content.publishedDate > b.content.publishedDate) {
+        return -1;
+      }
+      if (a.content.publishedDate < b.content.publishedDate) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  render() {
+    const { category } = this.props;
+
+    const articlesListItems = !category
+      ? this.getLatestArticles()
+      : this.getArticlesByCategory();
+
     return (
       <ArticlesListView
-        articles={articles.fetchedArticles} />
+        articles={articlesListItems}
+        shouldUpdate={!!this.state.shouldUpdate} />
     );
   }
 }
