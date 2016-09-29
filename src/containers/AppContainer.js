@@ -5,6 +5,7 @@ import { fetchArticles } from '../actions/articles';
 import { View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Header from '../components/Header';
+import Subheader from '../components/Subheader';
 import Navigation from '../components/Navigation';
 
 
@@ -58,12 +59,18 @@ class AppContainer extends Component {
 
   render() {
     const { articles, categories } = this.props;
+    const activeCategory = categories.currentlyActive;
+    const subHeading = activeCategory
+      ? categories.items.find(item => item.locationId === activeCategory).name
+      : 'Recent';
 
     return (
       <View style={styles.container}>
         <Header
           isMenuOpened={this.state.menuOpened}
           onPressMenu={this._onPressMenu.bind(this)} />
+        <Subheader
+          title={subHeading} />
         <Spinner
           visible={!this.state.appLoaded}
           overlayColor="#ef4134" />
