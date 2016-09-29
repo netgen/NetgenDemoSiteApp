@@ -52,13 +52,16 @@ export default class Subheader extends Component {
 
   _renderBackButton() {
     return (
-      <Icon name='chevron-left'  size={20} style={styles.leftMargin} />
+      <TouchableOpacity>
+        <Icon name='chevron-left'  size={20} style={styles.leftMargin} />
+      </TouchableOpacity>
     );
   }
 
   _renderShareButton() {
     return (
-      <Icon name='share' size={18} style={styles.rightMargin} />
-    );
+      <TouchableOpacity>
+        <Icon name='share' size={18} style={styles.rightMargin} />
+      </TouchableOpacity>    );
   }
 }
