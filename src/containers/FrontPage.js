@@ -60,8 +60,10 @@ class FrontPage extends Component {
 }
 
 function mapStateToProps(state) {
-  return { articles: state.articles,
-    activeCategory: state.categories.currentlyActive };
+  return {
+    articles: state.articles,
+    activeCategory: state.categories.currentlyActive
+  };
 }
 
 

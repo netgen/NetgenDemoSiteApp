@@ -13,14 +13,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   leftItem: {
-    marginLeft: 15,
+    marginLeft: 5,
   },
   centerItem: {
     height: 50,
     width: 50,
   },
   rightItem: {
-    marginRight: 15,
+    marginRight: 10,
     transform: [{ rotate: '90deg' }]
   },
 });
