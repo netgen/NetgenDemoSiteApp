@@ -7,7 +7,7 @@ import ArticlesListView from '../components/ArticlesListView';
 class FrontPage extends Component {
   static propTypes = {
     articles: PropTypes.object.isRequired,
-    category: PropTypes.string,
+    activeCategory: PropTypes.string.isRequired,
     navigator: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
   }
@@ -15,18 +15,6 @@ class FrontPage extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-  }
-
-  /* On category change update articles
-  componentWillReceiveProps(nextProps) {
-    const { category, dispatch } = this.props;
-    if (nextProps.category !== category) {
-      dispatch(fetchArticles(10)); // TODO: Add category to params
-    }
-  }*/
-
-  componentDidMount() {
-    if (this.props.category) { this.setState({ shouldUpdate: true }) }
   }
 
   getLatestArticles(numberOfArticles = 10) {
@@ -41,9 +29,9 @@ class FrontPage extends Component {
   }
 
   getArticlesByCategory(numberOfArticles = 10) {
-    const { articles, category } = this.props;
+    const { articles, activeCategory } = this.props;
 
-    return articles.fetchedArticles[parseInt(category)];
+    return articles.fetchedArticles[parseInt(activeCategory)];
   }
 
   sortArticles(articles) {
@@ -59,22 +47,21 @@ class FrontPage extends Component {
   }
 
   render() {
-    const { category } = this.props;
-
-    const articlesListItems = !category
+    const { activeCategory } = this.props;
+    const articlesListItems = !activeCategory
       ? this.getLatestArticles()
       : this.getArticlesByCategory();
 
     return (
       <ArticlesListView
-        articles={articlesListItems}
-        shouldUpdate={!!this.state.shouldUpdate} />
+        articles={articlesListItems} />
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { articles: state.articles };
+  return { articles: state.articles,
+    activeCategory: state.categories.currentlyActive };
 }
 
 

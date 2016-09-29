@@ -8,8 +8,8 @@ import FrontPage from '../containers/FrontPage';
 export default class SideNavigation extends Component {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    onPressMenu: PropTypes.func.isRequired,
     categories: PropTypes.array.isRequired,
+    onChangeCategory: PropTypes.func.isRequired,
     language: PropTypes.string,
   };
 
@@ -20,11 +20,11 @@ export default class SideNavigation extends Component {
 
   navigate(route) {
     this.refs.navigator.push(route);
-    this.props.onPressMenu();
+    // this.props.onPressMenu();
   }
 
   render() {
-    const { isOpen, categories, articles, language } = this.props;
+    const { isOpen, categories, onChangeCategory, language } = this.props;
     const drawerStyles = {
       drawer: {
         backgroundColor: '#403e41'
@@ -39,7 +39,7 @@ export default class SideNavigation extends Component {
         content={
           <SideNavigationMenu
             items={categories}
-            navigate={this.navigate.bind(this)}
+            changeCategory={onChangeCategory}
             language={language || 'English'} />
         }
         openDrawerOffset={0.18}
@@ -48,7 +48,9 @@ export default class SideNavigation extends Component {
         <Navigator
           ref="navigator"
           initialRoute={{ name: 'Articles list', index: 0 }}
-          renderScene={this.renderScene} />
+          renderScene={this.renderScene}
+          configureScene={(route, routeStack) =>
+            Navigator.SceneConfigs.FadeAndroid} />
 
       </Drawer>
     );
@@ -61,7 +63,6 @@ export default class SideNavigation extends Component {
     else {
       return (
         <FrontPage
-          category={route.category}
           navigator={navigator} />
       );
     }

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { fetchCategories } from '../actions/categories';
+import { fetchCategories, changeCategory } from '../actions/categories';
 import { fetchArticles } from '../actions/articles';
 import { View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -51,6 +51,11 @@ class AppContainer extends Component {
     this.setState({ menuOpened: !this.state.menuOpened });
   }
 
+  _onChangeCategory(category) {
+    this.props.dispatch(changeCategory(category));
+    this._onPressMenu();
+  }
+
   render() {
     const { articles, categories } = this.props;
 
@@ -65,8 +70,8 @@ class AppContainer extends Component {
         <Navigation
           ref="navigation"
           isOpen={this.state.menuOpened}
-          onPressMenu={this._onPressMenu.bind(this)}
-          categories={categories.items} />
+          categories={categories.items}
+          onChangeCategory={this._onChangeCategory.bind(this)} />
       </View>
     );
   }

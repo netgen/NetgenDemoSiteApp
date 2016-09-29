@@ -27,16 +27,14 @@ const styles = StyleSheet.create({
 export default class SideNavigationItem extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
-    navigate: PropTypes.func.isRequired,
+    changeCategory: PropTypes.func.isRequired,
   };
 
   render() {
-    const { item, navigate } = this.props;
+    const { item, changeCategory } = this.props;
 
     return (
-      <TouchableOpacity onPress={() =>
-          navigate({ title: 'Articles list', category: item.locationId, index: 0 })
-        }>
+      <TouchableOpacity onPress={() => changeCategory(item.locationId)}>
         <View style={styles.itemContainer}>
           <Text style={styles.itemText}>
             { item.name.toUpperCase() }

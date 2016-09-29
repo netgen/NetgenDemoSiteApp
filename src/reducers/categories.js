@@ -3,6 +3,7 @@ import * as types from '../actions/categories';
 
 const INITIAL_STATE = {
   items: [],
+  currentlyActive: '',
   error: null,
 };
 
@@ -18,6 +19,12 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         error: action.error,
+      };
+    }
+    case types.CHANGE_CATEGORY: {
+      return {
+        ...state,
+        currentlyActive: action.category,
       };
     }
     default: return state;
