@@ -5,7 +5,6 @@ import { fetchArticles } from '../actions/articles';
 import { View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Header from '../components/Header';
-import Subheader from '../components/Subheader';
 import Navigation from '../components/Navigation';
 
 
@@ -17,7 +16,7 @@ const styles = StyleSheet.create({
 
 class AppContainer extends Component {
   static propTypes = {
-    articles: PropTypes.object.isRequired,
+    articlesCount: PropTypes.number.isRequired,
     categories: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
   };
@@ -32,7 +31,7 @@ class AppContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { articles, dispatch } = nextProps;
+    const { articlesCount, dispatch } = nextProps;
     const categories = nextProps.categories.items;
     const numOfCategories = categories.length;
 
@@ -43,7 +42,7 @@ class AppContainer extends Component {
       }
     }
 
-    if (numOfCategories && numOfCategories === Object.keys(articles.fetchedArticles).length) {
+    if (numOfCategories && numOfCategories === articlesCount) {
       this.setState({ appLoaded: true });
     }
   }
@@ -58,19 +57,13 @@ class AppContainer extends Component {
   }
 
   render() {
-    const { articles, categories } = this.props;
-    const activeCategory = categories.currentlyActive;
-    const subHeading = activeCategory
-      ? categories.items.find(item => item.locationId === activeCategory).name
-      : 'Recent';
+    const { categories } = this.props;
 
     return (
       <View style={styles.container}>
         <Header
           isMenuOpened={this.state.menuOpened}
           onPressMenu={this._onPressMenu.bind(this)} />
-        <Subheader
-          title={subHeading} />
         <Spinner
           visible={!this.state.appLoaded}
           overlayColor="#ef4134" />
@@ -85,7 +78,10 @@ class AppContainer extends Component {
 }
 
 function mapStateToProps(state) {
-  return state;
+  return {
+    articlesCount: Object.keys(state.articles.fetchedArticles).length,
+    categories: state.categories,
+  };
 }
 
 

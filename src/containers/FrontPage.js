@@ -1,13 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { fetchArticles } from '../actions/articles';
+import { View } from 'react-native';
+import Subheader from '../components/Subheader';
 import ArticlesListView from '../components/ArticlesListView';
 
 
 class FrontPage extends Component {
   static propTypes = {
     articles: PropTypes.object.isRequired,
-    activeCategory: PropTypes.string.isRequired,
+    categories: PropTypes.object.isRequired,
     navigator: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
   }
@@ -25,13 +27,20 @@ class FrontPage extends Component {
       allArticles = allArticles.concat(articles.fetchedArticles[category]);
     }
 
-    return this.sortArticles(allArticles).slice(0,numberOfArticles);
+    return {
+      title: 'Most recent',
+      listItems: this.sortArticles(allArticles).slice(0, numberOfArticles),
+    };
   }
 
-  getArticlesByCategory(numberOfArticles = 10) {
-    const { articles, activeCategory } = this.props;
+  getArticlesByCategory(activeCategory, numberOfArticles = 10) {
+    const { articles, categories } = this.props;
+    const { items } = categories;
 
-    return articles.fetchedArticles[parseInt(activeCategory)];
+    return {
+      title: items.find(item => item.locationId === activeCategory).name,
+      listItems: articles.fetchedArticles[parseInt(activeCategory)],
+    };
   }
 
   sortArticles(articles) {
@@ -47,14 +56,18 @@ class FrontPage extends Component {
   }
 
   render() {
-    const { activeCategory } = this.props;
-    const articlesListItems = !activeCategory
+    const { currentlyActive: activeCategory } = this.props.categories;
+    const { title, listItems } = !activeCategory
       ? this.getLatestArticles()
-      : this.getArticlesByCategory();
+      : this.getArticlesByCategory(activeCategory);
 
     return (
-      <ArticlesListView
-        articles={articlesListItems} />
+      <View style={{ flex: 1 }}>
+        <Subheader
+          title={title.toUpperCase()} />
+        <ArticlesListView
+          articles={listItems} />
+      </View>
     );
   }
 }
@@ -62,7 +75,7 @@ class FrontPage extends Component {
 function mapStateToProps(state) {
   return {
     articles: state.articles,
-    activeCategory: state.categories.currentlyActive
+    categories: state.categories,
   };
 }
 

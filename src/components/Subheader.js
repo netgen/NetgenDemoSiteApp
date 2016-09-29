@@ -6,15 +6,23 @@ import Icon  from 'react-native-vector-icons/Entypo';
 const styles = StyleSheet.create({
   subheader: {
     height: 40,
-    flexDirection: 'row',
     backgroundColor: '#e2e3e3',
-    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   title: {
-    marginLeft: 10,
     color: '#333',
     fontWeight: '500',
     fontFamily: (Platform.OS === 'ios') ? 'Helvetica' : 'Roboto',
+  },
+  verticalAlignment: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  leftMargin: {
+    marginLeft: 10,
+  },
+  rightMargin: {
+    marginRight: 10,
   },
 });
 
@@ -24,12 +32,33 @@ export default class Subheader extends Component {
   };
 
   render() {
-    return(
-      <View style={styles.subheader}>
-        <Text style={styles.title}>
-          { this.props.title.toUpperCase() }
-        </Text>
+    const fullView = !this.props.title;
+    const leftMargin = fullView ? {} : styles.leftMargin;
+
+    return (
+      <View style={[styles.verticalAlignment, styles.subheader]}>
+        <View style={styles.verticalAlignment}>
+          { fullView ? this._renderBackButton() : null }
+          <Text style={[styles.title, leftMargin]}>
+            { this.props.title || 'BACK' }
+          </Text>
+        </View>
+        <View>
+          { fullView ? this._renderShareButton() : null }
+        </View>
       </View>
+    );
+  }
+
+  _renderBackButton() {
+    return (
+      <Icon name='chevron-left'  size={20} style={styles.leftMargin} />
+    );
+  }
+
+  _renderShareButton() {
+    return (
+      <Icon name='share' size={18} style={styles.rightMargin} />
     );
   }
 }
