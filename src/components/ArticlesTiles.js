@@ -55,7 +55,7 @@ export default class ArticlesTiles extends Component {
 
   _renderFullScreenTile(article) {
     return (
-      <View key={article.image}>
+      <View key={article.content._id}>
         <Image
           style={styles.fullScreenWidthImage}
           source={{ uri: article.image }} >
@@ -69,7 +69,7 @@ export default class ArticlesTiles extends Component {
 
   _renderTwoColumnTiles(article) {
     return (
-      <View key={article.image} style={styles.twoColumnContainer}>
+      <View key={article.content._id} style={styles.twoColumnContainer}>
         <Image
           style={{ height: 90 }}
           source={{ uri: article.image }} />

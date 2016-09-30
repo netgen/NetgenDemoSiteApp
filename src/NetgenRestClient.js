@@ -77,7 +77,7 @@ export default class NetgenRestClient {
 
   async _fetchArticles(numberOfItems = 10, parentLocationID, contentTypes = ['ng_news', 'ng_article', 'ng_blog_post', 'ng_video']) {
     const requestUrl = `${this.endPointUrl}${this.apiPath}views`;
-    const criterionObject = parentLocationID ? { "ParentLocationIdCriterion": parentLocationID } : {};
+    const criterionObject = parentLocationID ? { "SubtreeCriterion": `/1/2/${parentLocationID}/` } : {};
     const contentTypeCriterion = this._buildContentTypeCriterion(contentTypes, criterionObject);
 
     const response = await fetch(requestUrl, {
