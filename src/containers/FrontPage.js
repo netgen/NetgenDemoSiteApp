@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { fetchArticles } from '../actions/articles';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import Subheader from '../components/Subheader';
+import ArticlesTiles from '../components/ArticlesTiles';
 import ArticlesListView from '../components/ArticlesListView';
 
 
@@ -65,8 +66,12 @@ class FrontPage extends Component {
       <View style={{ flex: 1 }}>
         <Subheader
           title={title.toUpperCase()} />
-        <ArticlesListView
-          articles={listItems} />
+        <ScrollView>
+          { !activeCategory ? <ArticlesTiles articles={listItems.splice(0,3)}/> : null }
+          { !activeCategory ? <Subheader title='More news' /> : null }
+          <ArticlesListView
+            articles={listItems} />
+        </ScrollView>
       </View>
     );
   }
