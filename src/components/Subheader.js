@@ -5,13 +5,14 @@ import Icon  from 'react-native-vector-icons/Entypo';
 
 const styles = StyleSheet.create({
   subheader: {
-    height: 40,
+    height: 32,
     backgroundColor: '#e2e3e3',
     justifyContent: 'space-between',
   },
   title: {
     color: '#333',
     fontWeight: '500',
+    fontSize: 10,
     fontFamily: (Platform.OS === 'ios') ? 'Helvetica' : 'Roboto',
   },
   verticalAlignment: {
@@ -40,7 +41,7 @@ export default class Subheader extends Component {
         <View style={styles.verticalAlignment}>
           { fullView ? this._renderBackButton() : null }
           <Text style={[styles.title, leftMargin]}>
-            { this.props.title || 'BACK' }
+            { this.props.title.toUpperCase() || 'BACK' }
           </Text>
         </View>
         <View>
@@ -62,6 +63,7 @@ export default class Subheader extends Component {
     return (
       <TouchableOpacity>
         <Icon name='share' size={18} style={styles.rightMargin} />
-      </TouchableOpacity>    );
+      </TouchableOpacity>
+    );
   }
 }
