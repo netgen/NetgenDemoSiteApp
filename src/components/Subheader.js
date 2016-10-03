@@ -30,31 +30,35 @@ const styles = StyleSheet.create({
 export default class Subheader extends Component {
   static propTypes = {
     title: PropTypes.string,
+    onPressBackBtn: PropTypes.func,
   };
 
   render() {
     const fullView = !this.props.title;
-    const leftMargin = fullView ? {} : styles.leftMargin;
 
     return (
       <View style={[styles.verticalAlignment, styles.subheader]}>
-        <View style={styles.verticalAlignment}>
-          { fullView ? this._renderBackButton() : null }
-          <Text style={[styles.title, leftMargin]}>
-            { this.props.title.toUpperCase() || 'BACK' }
-          </Text>
-        </View>
-        <View>
-          { fullView ? this._renderShareButton() : null }
-        </View>
+        { fullView ? this._renderBackButton() : this._renderTitle() }
+        { fullView ? this._renderShareButton() : null }
       </View>
+    );
+  }
+
+  _renderTitle() {
+    return (
+      <Text style={[styles.title, styles.leftMargin]}>
+        { this.props.title.toUpperCase() }
+      </Text>
     );
   }
 
   _renderBackButton() {
     return (
-      <TouchableOpacity>
-        <Icon name='chevron-left'  size={20} style={styles.leftMargin} />
+      <TouchableOpacity
+        onPress={() => this.props.onPressBackBtn()}
+        style={styles.verticalAlignment} >
+        <Icon name='chevron-left'  size={12} style={styles.leftMargin} />
+        <Text style={[styles.title]}>BACK</Text>
       </TouchableOpacity>
     );
   }
@@ -62,7 +66,7 @@ export default class Subheader extends Component {
   _renderShareButton() {
     return (
       <TouchableOpacity>
-        <Icon name='share' size={18} style={styles.rightMargin} />
+        <Icon name='share' size={12} style={styles.rightMargin} />
       </TouchableOpacity>
     );
   }

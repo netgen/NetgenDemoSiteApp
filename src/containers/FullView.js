@@ -1,21 +1,32 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
+import Subheader from '../components/Subheader';
 
 
 class FullView extends Component {
   static propTypes = {
-    articleId: PropTypes.number,
+    article: PropTypes.object.isRequired,
     articles: PropTypes.object.isRequired,
     navigator: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
   }
 
+  onPressBackBtn() {
+    this.props.navigator.pop();
+  }
+
   render() {
+    const { article } = this.props;
+
     return (
-      <ScrollView>
-        <Text> { this.props.articleId } </Text>
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <Subheader
+          onPressBackBtn={this.onPressBackBtn.bind(this)} />
+        <ScrollView>
+          <Text> { article.content._id } </Text>
+        </ScrollView>
+      </View>
     );
   }
 
