@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text, Image, Platform, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 
 
 const styles = StyleSheet.create({
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
 export default class ArticlesTiles extends Component {
   static propTypes: {
     articles: PropTypes.array.isRequired,
+    onPressArticle: PropTypes.func.isRequired,
   };
 
   /* TODO: In future consider making separate component for full screen tile
@@ -55,7 +56,9 @@ export default class ArticlesTiles extends Component {
 
   _renderFullScreenTile(article) {
     return (
-      <View key={article.content._id}>
+      <TouchableOpacity
+        key={article.content._id}
+        onPress={() => this.props.onPressArticle(article.content._id)} >
         <Image
           style={styles.fullScreenWidthImage}
           source={{ uri: article.image }} >
@@ -63,20 +66,23 @@ export default class ArticlesTiles extends Component {
             { article.name.trim() }
           </Text>
         </Image>
-      </View>
+      </TouchableOpacity>
     );
   }
 
   _renderTwoColumnTiles(article) {
     return (
-      <View key={article.content._id} style={styles.twoColumnContainer}>
+      <TouchableOpacity
+        key={article.content._id}
+        onPress={() => this.props.onPressArticle(article.content._id)} 
+        style={styles.twoColumnContainer} >
         <Image
           style={{ height: 90 }}
           source={{ uri: article.image }} />
         <Text style={[styles.font, { color: '#fff' }]}>
           { article.name.trim() }
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

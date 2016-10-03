@@ -71,7 +71,11 @@ class FrontPage extends Component {
         <Subheader
           title={title.toUpperCase()} />
         <ScrollView>
-          { !activeCategory ? <ArticlesTiles articles={listItems.splice(0,3)}/> : null }
+          { !activeCategory
+              ? <ArticlesTiles
+                  articles={listItems.splice(0,3)}
+                  onPressArticle={this._onPressArticle.bind(this)} /> 
+              : null }
           { !activeCategory ? <Subheader title='More news' /> : null }
           <ArticlesListView
             articles={listItems}
