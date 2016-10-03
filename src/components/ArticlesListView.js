@@ -4,6 +4,7 @@ import {
   Image,
   Text,
   StyleSheet,
+  TouchableOpacity,
   ListView } from 'react-native';
 
 
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
 export default class ArticlesListView extends Component {
   static propTypes = {
     articles: PropTypes.array.isRequired,
+    onPressArticle: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -48,21 +50,23 @@ export default class ArticlesListView extends Component {
   render() {
     return (
       <ListView
-        dataSource={this.state.dataSource || []}
+        dataSource={this.state.dataSource}
         enableEmptySections={true}
-        renderRow={this._renderRow}
+        renderRow={this._renderRow.bind(this)}
         renderSeparator={this._renderSeparator} />
     );
   }
 
   _renderRow(rowData, sectionID, rowID) {
     return (
-      <View style={styles.row}>
-        <Image style={styles.image} source={{ uri: rowData.image }}></Image>
-        <Text style={styles.text}>
-          {rowData.title}
-        </Text>
-      </View>
+      <TouchableOpacity onPress={() => this.props.onPressArticle(rowData.id)}>
+        <View style={styles.row}>
+          <Image style={styles.image} source={{ uri: rowData.image }}></Image>
+          <Text style={styles.text}>
+            {rowData.title}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 
@@ -82,8 +86,9 @@ export default class ArticlesListView extends Component {
     const { articles } = props;
 
     return articles.map(article => ({
+        id: article.content._id,
         title: article.name,
-        image: article.image
+        image: article.image,
     }));
   }
 }

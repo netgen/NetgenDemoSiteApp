@@ -3,6 +3,7 @@ import Drawer from 'react-native-drawer';
 import SideNavigationMenu from './SideNavigationMenu';
 import { Navigator } from 'react-native';
 import FrontPage from '../containers/FrontPage';
+import FullView from '../containers/FullView';
 
 
 export default class SideNavigation extends Component {
@@ -16,11 +17,6 @@ export default class SideNavigation extends Component {
   constructor(props) {
     super(props);
     this.state = { isMenuOpened: false };
-  }
-
-  navigate(route) {
-    this.refs.navigator.push(route);
-    // this.props.onPressMenu();
   }
 
   render() {
@@ -39,7 +35,10 @@ export default class SideNavigation extends Component {
         content={
           <SideNavigationMenu
             items={categories}
-            changeCategory={onChangeCategory}
+            changeCategory={(category) => {
+              this.refs.navigator.popToTop();
+              onChangeCategory(category);
+            }}
             language={language || 'English'} />
         }
         openDrawerOffset={0.18}
@@ -57,8 +56,12 @@ export default class SideNavigation extends Component {
   }
 
   renderScene(route, navigator) {
-    if (route.articleName) {
-      return null; // TODO: Should be replaced with article full view component
+    if (route.articleId) {
+      return (
+        <FullView
+          articleId={route.articleId}
+          navigator={navigator} />
+      );
     }
     else {
       return (
