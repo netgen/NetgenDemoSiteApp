@@ -58,7 +58,7 @@ export default class ArticlesTiles extends Component {
     return (
       <TouchableOpacity
         key={article.content._id}
-        onPress={() => this.props.onPressArticle(article.content._id)} >
+        onPress={() => this.props.onPressArticle(article)} >
         <Image
           style={styles.fullScreenWidthImage}
           source={{ uri: article.image }} >
@@ -74,7 +74,7 @@ export default class ArticlesTiles extends Component {
     return (
       <TouchableOpacity
         key={article.content._id}
-        onPress={() => this.props.onPressArticle(article.content._id)} 
+        onPress={() => this.props.onPressArticle(article)}
         style={styles.twoColumnContainer} >
         <Image
           style={{ height: 90 }}

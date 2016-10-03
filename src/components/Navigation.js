@@ -56,10 +56,10 @@ export default class SideNavigation extends Component {
   }
 
   renderScene(route, navigator) {
-    if (route.articleId) {
+    if (route.article) {
       return (
         <FullView
-          articleId={route.articleId}
+          article={route.article}
           navigator={navigator} />
       );
     }

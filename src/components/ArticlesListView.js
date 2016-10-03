@@ -41,7 +41,7 @@ export default class ArticlesListView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const data = this._generateArticleRows(nextProps);
+    const data = nextProps.articles;
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(data)
     });
@@ -59,11 +59,11 @@ export default class ArticlesListView extends Component {
 
   _renderRow(rowData, sectionID, rowID) {
     return (
-      <TouchableOpacity onPress={() => this.props.onPressArticle(rowData.id)}>
+      <TouchableOpacity onPress={() => this.props.onPressArticle(rowData)}>
         <View style={styles.row}>
           <Image style={styles.image} source={{ uri: rowData.image }}></Image>
           <Text style={styles.text}>
-            {rowData.title}
+            {rowData.name}
           </Text>
         </View>
       </TouchableOpacity>
@@ -80,15 +80,5 @@ export default class ArticlesListView extends Component {
         }}
       />
     );
-  }
-
-  _generateArticleRows(props) {
-    const { articles } = props;
-
-    return articles.map(article => ({
-        id: article.content._id,
-        title: article.name,
-        image: article.image,
-    }));
   }
 }

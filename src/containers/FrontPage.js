@@ -56,8 +56,8 @@ class FrontPage extends Component {
     });
   }
 
-  _onPressArticle(articleId) {
-    this.props.navigator.push({ name: 'Article full view', articleId, index: 1 });
+  _onPressArticle(article) {
+    this.props.navigator.push({ name: 'Article full view', article, index: 1 });
   }
 
   render() {
@@ -74,7 +74,7 @@ class FrontPage extends Component {
           { !activeCategory
               ? <ArticlesTiles
                   articles={listItems.splice(0,3)}
-                  onPressArticle={this._onPressArticle.bind(this)} /> 
+                  onPressArticle={this._onPressArticle.bind(this)} />
               : null }
           { !activeCategory ? <Subheader title='More news' /> : null }
           <ArticlesListView
