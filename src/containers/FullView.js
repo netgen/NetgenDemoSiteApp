@@ -113,7 +113,7 @@ class FullView extends Component {
           <WebView
             ref='Webview'
             source={{ html: `<!DOCTYPE html>\n<html><body> ${customHtml} ${heightScript} </body></html>` }}
-            style={{ height: Number(this.state.height) + 30 }}
+            style={{ marginLeft: 3, height: Number(this.state.height) + 30 }}
             scrollEnabled={false}
             startInLoadingState={false}
             onShouldStartLoadWithRequest={this.openExternalLinkIfNeeded}
