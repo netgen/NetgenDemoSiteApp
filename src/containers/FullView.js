@@ -129,14 +129,18 @@ class FullView extends Component {
   }
 
   _renderMetadata() {
-    const author = this.articleContent('author_override').fieldValue;
-    const publishDate = new Date(this.articleContent('publish_date').fieldValue.rfc850);
+    const author = this.articleContent('author_override');
+    const publishDate = this.articleContent('publish_date');
+
+    if (!author && !publishDate) return null;
 
     return (
       <View style={{ flexDirection: 'row', marginTop: 10, }}>
-        <Text style={{ color: '#ef4134' }}>{ author }</Text>
-        { author ? <Text> | </Text> : null }
-        <Text style={{ flex:1 }}>{ publishDate.toLocaleDateString('hr') }</Text>
+        <Text style={{ color: '#ef4134' }}>{ author ? author.fieldValue : null }</Text>
+        <Text style={{ flex:1 }}>
+          { (author && author.fieldValue) ? ' | ' : null }
+          { publishDate ? new Date(publishDate.fieldValue.rfc850).toLocaleDateString('hr') : null }
+        </Text>
       </View>
     );
   }
