@@ -28,13 +28,15 @@ export default class SideNavigationMenu extends Component {
 
   render() {
     const { items, language } = this.props;
+    const homeMenuItem = [{ locationId: '', name: 'Home' }]
+    const menuItems = homeMenuItem.concat(items);
 
     return (
       <View>
         <View style={styles.headerContainer}>
           <Text style={styles.header}> {language} </Text>
         </View>
-        { this._renderItems(items) }
+        { this._renderItems(menuItems) }
       </View>
     );
   }
@@ -42,7 +44,7 @@ export default class SideNavigationMenu extends Component {
   _renderItems(items) {
     return items.map((item, index) => (
             <SideNavigationItem
-              key={item.locationId}
+              key={`category ${item.locationId || 'all'}`}
               item={item}
               changeCategory={this.props.changeCategory} />
           ));
