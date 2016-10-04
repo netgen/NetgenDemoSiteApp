@@ -61,7 +61,7 @@ export default class ArticlesListView extends Component {
     return (
       <TouchableOpacity onPress={() => this.props.onPressArticle(rowData)}>
         <View style={styles.row}>
-          <Image style={styles.image} source={{ uri: rowData.image }}></Image>
+          <Image key={rowData.image} style={styles.image} source={{ uri: rowData.image }}></Image>
           <Text style={styles.text}>
             {rowData.name}
           </Text>
