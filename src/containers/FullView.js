@@ -1,6 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image, StyleSheet, Platform, ScrollView, WebView } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Platform,
+  ScrollView,
+  Linking,
+  WebView } from 'react-native';
 import Subheader from '../components/Subheader';
 
 
@@ -43,11 +51,18 @@ class FullView extends Component {
     };
   }
 
-  getArticleContent(fieldIdentifier) {
+  articleContent(fieldIdentifier) {
     const articleContentFields = this.props.article.content.CurrentVersion.Version.Fields.field;
     return articleContentFields.find( field =>
       (field.fieldDefinitionIdentifier === fieldIdentifier)
     );
+  }
+
+  filteredArticleBody() {
+    return this.articleContent('body').fieldValue.xml
+      .replace(/<\/?(?:(?!bold|italic|break|link|paragraph|header).)*?\/?>/ig, '') // filter out some xml tags
+      .replace(/(<\/?)([a-z]*)/ig, this.replaceXmlTagsWithHtml)
+      .replace(/(url)(=)/ig, 'href$2');
   }
 
   replaceXmlTagsWithHtml(match, tag, keyWord) {
@@ -59,15 +74,29 @@ class FullView extends Component {
     }
   }
 
+  /*
+    onShouldStartLoadWithRequest is iOS specific. Thats why this method is being called
+    on navigation state change for Android.
+  */
+  openExternalLinkIfNeeded(navState) {
+    const url = navState.url;
+
+    /* Return value defines whether WebView should try to load the source inside the app*/
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      Linking.openURL(url);
+      return Platform.OS === 'android' ? this.refs.Webview.stopLoading() : false;
+    }
+
+    return true;
+  }
+
   onPressBackBtn() {
     this.props.navigator.pop();
   }
 
   render() {
     const { article } = this.props;
-    const customHtml = this.getArticleContent('body').fieldValue.xml
-      .replace(/<\/?(?:(?!bold|italic|break|link|paragraph|header).)*?\/?>/ig, '') // filter out some xml tags
-      .replace(/(<\/?)([a-z]*)/ig, this.replaceXmlTagsWithHtml);
+    const customHtml = this.filteredArticleBody();
 
     return (
       <View style={styles.container}>
@@ -82,19 +111,26 @@ class FullView extends Component {
             source={{ uri: article.image }}
             style={styles.fullScreenWidthImage} />
           <WebView
+            ref='Webview'
             source={{ html: `<!DOCTYPE html>\n<html><body> ${customHtml} ${heightScript} </body></html>` }}
             style={{ height: Number(this.state.height) + 30 }}
             scrollEnabled={false}
             startInLoadingState={false}
-            onNavigationStateChange={(navState) => this.setState({ height: navState.title })} />
+            onShouldStartLoadWithRequest={this.openExternalLinkIfNeeded}
+            onNavigationStateChange={ (navState) => {
+              this.setState({ height: navState.title });
+              if (Platform.OS === 'android') {
+                this.openExternalLinkIfNeeded(navState);
+              }
+            }} />
         </ScrollView>
       </View>
     );
   }
 
   _renderMetadata() {
-    const author = this.getArticleContent('author_override').fieldValue;
-    const publishDate = new Date(this.getArticleContent('publish_date').fieldValue.rfc850);
+    const author = this.articleContent('author_override').fieldValue;
+    const publishDate = new Date(this.articleContent('publish_date').fieldValue.rfc850);
 
     return (
       <View style={{ flexDirection: 'row', marginTop: 10, }}>
