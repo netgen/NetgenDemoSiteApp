@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import Drawer from 'react-native-drawer';
 import { Navigator } from 'react-native';
 import SideNavigationMenu from './SideNavigationMenu';
-import FrontPage from '../containers/FrontPage';
-import FullView from '../containers/FullView';
+import HomeScreen from '../containers/HomeScreen';
+import ArticleScreen from '../containers/ArticleScreen';
 
 
 export default class SideNavigation extends Component {
@@ -22,14 +22,14 @@ export default class SideNavigation extends Component {
   renderScene(route, navigator) {
     if (route.article) {
       return (
-        <FullView
+        <ArticleScreen
           article={route.article}
           navigator={navigator}
         />
       );
     }
     return (
-      <FrontPage
+      <HomeScreen
         navigator={navigator}
       />
     );

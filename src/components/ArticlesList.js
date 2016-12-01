@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 
-export default class ArticlesListView extends Component {
+export default class ArticlesList extends Component {
   static propTypes = {
     articles: PropTypes.array.isRequired,
     onPressArticle: PropTypes.func.isRequired,

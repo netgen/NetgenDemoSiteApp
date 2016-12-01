@@ -62,12 +62,12 @@ export default class Subheader extends Component {
   }
 
   render() {
-    const fullView = !this.props.title;
+    const articleFullView = !this.props.title;
 
     return (
       <View style={[styles.verticalAlignment, styles.subheader]}>
-        { fullView ? this.renderBackButton() : this.renderTitle() }
-        { fullView ? this.renderShareButton() : null }
+        { articleFullView ? this.renderBackButton() : this.renderTitle() }
+        { articleFullView ? this.renderShareButton() : null }
       </View>
     );
   }

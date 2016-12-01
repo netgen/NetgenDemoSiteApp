@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { View, ScrollView } from 'react-native';
 import Subheader from '../components/Subheader';
 import ArticlesTiles from '../components/ArticlesTiles';
-import ArticlesListView from '../components/ArticlesListView';
+import ArticlesList from '../components/ArticlesList';
 
 
-class FrontPage extends Component {
+class HomeScreen extends Component {
   static propTypes = {
     articles: PropTypes.object.isRequired,
     categories: PropTypes.object.isRequired,
@@ -80,7 +80,7 @@ class FrontPage extends Component {
             />
           }
           { !activeCategory && <Subheader title="More news" /> }
-          <ArticlesListView
+          <ArticlesList
             articles={listItems}
             onPressArticle={this.onPressArticle.bind(this)}
           />
@@ -98,4 +98,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps)(FrontPage);
+export default connect(mapStateToProps)(HomeScreen);

@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class FullView extends Component {
+class ArticleScreen extends Component {
   static propTypes = {
     article: PropTypes.object.isRequired,
     navigator: PropTypes.object.isRequired,
@@ -149,4 +149,4 @@ class FullView extends Component {
   }
 }
 
-export default FullView;
+export default ArticleScreen;
