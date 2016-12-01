@@ -6,22 +6,18 @@ const netgenLogo = require('../../assets/logo_simple_2.png');
 
 const styles = StyleSheet.create({
   header: {
-    height: 90,
+    height: 70,
     backgroundColor: '#ef4134',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  leftItem: {
-    marginLeft: 5,
+  headerIcon: {
+    margin: 5,
   },
   centerItem: {
-    height: 40,
-    width: 114,
-  },
-  rightItem: {
-    marginRight: 10,
-    transform: [{ rotate: '90deg' }],
+    height: 30,
+    width: 85,
   },
 });
 
@@ -46,9 +42,9 @@ export default class Header extends Component {
         <TouchableOpacity onPress={() => onPressMenu()}>
           <Icon
             name={leftIcon}
-            size={40}
+            size={30}
             color="#fff"
-            style={styles.leftItem}
+            style={styles.headerIcon}
           />
         </TouchableOpacity>
         <Image
@@ -57,9 +53,9 @@ export default class Header extends Component {
         />
         <Icon
           name="magnifying-glass"
-          size={32}
+          size={25}
           color="#fff"
-          style={styles.rightItem}
+          style={styles.headerIcon}
         />
       </View>
     );
