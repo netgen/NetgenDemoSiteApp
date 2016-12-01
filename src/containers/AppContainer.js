@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { fetchCategories, changeCategory } from '../actions/categories';
-import { fetchArticles } from '../actions/articles';
 import { View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { fetchCategories, changeCategory } from '../actions/categories';
+import { fetchArticles } from '../actions/articles';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
 
@@ -47,13 +47,13 @@ class AppContainer extends Component {
     }
   }
 
-  _onPressMenu() {
+  onPressMenu() {
     this.setState({ menuOpened: !this.state.menuOpened });
   }
 
-  _onChangeCategory(category) {
+  onChangeCategory(category) {
     this.props.dispatch(changeCategory(category));
-    this._onPressMenu();
+    this.onPressMenu();
   }
 
   render() {
@@ -63,15 +63,18 @@ class AppContainer extends Component {
       <View style={styles.container}>
         <Header
           isMenuOpened={this.state.menuOpened}
-          onPressMenu={this._onPressMenu.bind(this)} />
+          onPressMenu={this.onPressMenu.bind(this)}
+        />
         <Spinner
           visible={!this.state.appLoaded}
-          overlayColor="#ef4134" />
+          overlayColor="#ef4134"
+        />
         <Navigation
           ref="navigation"
           isOpen={this.state.menuOpened}
           categories={categories.items}
-          onChangeCategory={this._onChangeCategory.bind(this)} />
+          onChangeCategory={this.onChangeCategory.bind(this)}
+        />
       </View>
     );
   }

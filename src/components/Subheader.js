@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native';
-import Icon  from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/Entypo';
 
 
 const styles = StyleSheet.create({
@@ -33,18 +33,7 @@ export default class Subheader extends Component {
     onPressBackBtn: PropTypes.func,
   };
 
-  render() {
-    const fullView = !this.props.title;
-
-    return (
-      <View style={[styles.verticalAlignment, styles.subheader]}>
-        { fullView ? this._renderBackButton() : this._renderTitle() }
-        { fullView ? this._renderShareButton() : null }
-      </View>
-    );
-  }
-
-  _renderTitle() {
+  renderTitle() {
     return (
       <Text style={[styles.title, styles.leftMargin]}>
         { this.props.title.toUpperCase() }
@@ -52,22 +41,34 @@ export default class Subheader extends Component {
     );
   }
 
-  _renderBackButton() {
+  renderBackButton() {
     return (
       <TouchableOpacity
         onPress={() => this.props.onPressBackBtn()}
-        style={styles.verticalAlignment} >
-        <Icon name='chevron-left'  size={12} style={styles.leftMargin} />
+        style={styles.verticalAlignment}
+      >
+        <Icon name="chevron-left" size={12} style={styles.leftMargin} />
         <Text style={[styles.title]}>BACK</Text>
       </TouchableOpacity>
     );
   }
 
-  _renderShareButton() {
+  renderShareButton() {
     return (
       <TouchableOpacity>
-        <Icon name='share' size={12} style={styles.rightMargin} />
+        <Icon name="share" size={12} style={styles.rightMargin} />
       </TouchableOpacity>
+    );
+  }
+
+  render() {
+    const fullView = !this.props.title;
+
+    return (
+      <View style={[styles.verticalAlignment, styles.subheader]}>
+        { fullView ? this.renderBackButton() : this.renderTitle() }
+        { fullView ? this.renderShareButton() : null }
+      </View>
     );
   }
 }

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import {
   View,
   Text,
@@ -39,9 +38,7 @@ const styles = StyleSheet.create({
 class FullView extends Component {
   static propTypes = {
     article: PropTypes.object.isRequired,
-    articles: PropTypes.object.isRequired,
     navigator: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -51,26 +48,31 @@ class FullView extends Component {
     };
   }
 
+  onPressBackBtn() {
+    this.props.navigator.pop();
+  }
+
   articleContent(fieldIdentifier) {
     const articleContentFields = this.props.article.content.CurrentVersion.Version.Fields.field;
-    return articleContentFields.find( field =>
+    return articleContentFields.find(field =>
       (field.fieldDefinitionIdentifier === fieldIdentifier)
     );
   }
 
+  // filter out some xml tags
   filteredArticleBody() {
     return this.articleContent('body').fieldValue.xml
-      .replace(/<\/?(?:(?!bold|italic|break|link|paragraph|header).)*?\/?>/ig, '') // filter out some xml tags
+      .replace(/<\/?(?:(?!bold|italic|break|link|paragraph|header).)*?\/?>/ig, '')
       .replace(/(<\/?)([a-z]*)/ig, this.replaceXmlTagsWithHtml)
       .replace(/(url)(=)/ig, 'href$2');
   }
 
   replaceXmlTagsWithHtml(match, tag, keyWord) {
-    switch(keyWord) {
+    switch (keyWord) {
       case 'header': return `${tag}h2`;
       case 'link': return `${tag}a`;
       case 'break': return `${tag}br`;
-      default: return `${tag}${keyWord.substring(0,1)}`;
+      default: return `${tag}${keyWord.substring(0, 1)}`;
     }
   }
 
@@ -90,8 +92,21 @@ class FullView extends Component {
     return true;
   }
 
-  onPressBackBtn() {
-    this.props.navigator.pop();
+  renderMetadata() {
+    const author = this.articleContent('author_override');
+    const publishDate = this.articleContent('publish_date');
+
+    if (!author && !publishDate) return null;
+
+    return (
+      <View style={{ flexDirection: 'row', marginTop: 10 }}>
+        <Text style={{ color: '#ef4134' }}>{ author ? author.fieldValue : null }</Text>
+        <Text style={{ flex: 1 }}>
+          { (author && author.fieldValue) ? ' | ' : null }
+          { publishDate ? new Date(publishDate.fieldValue.rfc850).toLocaleDateString('hr') : null }
+        </Text>
+      </View>
+    );
   }
 
   render() {
@@ -101,55 +116,37 @@ class FullView extends Component {
     return (
       <View style={styles.container}>
         <Subheader
-          onPressBackBtn={this.onPressBackBtn.bind(this)} />
+          onPressBackBtn={this.onPressBackBtn.bind(this)}
+        />
         <ScrollView>
           <View style={styles.header}>
             <Text style={styles.title}>{ article.name.trim() }</Text>
-            { this._renderMetadata() }
+            { this.renderMetadata() }
           </View>
           <Image
             source={{ uri: article.image }}
-            style={styles.fullScreenWidthImage} />
+            style={styles.fullScreenWidthImage}
+          />
           <WebView
-            ref='Webview'
-            source={{ html: `<!DOCTYPE html>\n<html><body> ${customHtml} ${heightScript} </body></html>` }}
+            ref="Webview"
+            source={{
+              html: `<!DOCTYPE html>\n<html><body> ${customHtml} ${heightScript} </body></html>`,
+            }}
             style={{ marginLeft: 3, height: Number(this.state.height) + 30 }}
             scrollEnabled={false}
             startInLoadingState={false}
             onShouldStartLoadWithRequest={this.openExternalLinkIfNeeded}
-            onNavigationStateChange={ (navState) => {
+            onNavigationStateChange={(navState) => {
               this.setState({ height: navState.title });
               if (Platform.OS === 'android') {
                 this.openExternalLinkIfNeeded(navState);
               }
-            }} />
+            }}
+          />
         </ScrollView>
       </View>
     );
   }
-
-  _renderMetadata() {
-    const author = this.articleContent('author_override');
-    const publishDate = this.articleContent('publish_date');
-
-    if (!author && !publishDate) return null;
-
-    return (
-      <View style={{ flexDirection: 'row', marginTop: 10, }}>
-        <Text style={{ color: '#ef4134' }}>{ author ? author.fieldValue : null }</Text>
-        <Text style={{ flex:1 }}>
-          { (author && author.fieldValue) ? ' | ' : null }
-          { publishDate ? new Date(publishDate.fieldValue.rfc850).toLocaleDateString('hr') : null }
-        </Text>
-      </View>
-    );
-  }
 }
 
-function mapStateToProps(state) {
-  return {
-    articles: state.articles.fetchedArticles,
-  };
-}
-
-export default connect(mapStateToProps)(FullView);
+export default FullView;

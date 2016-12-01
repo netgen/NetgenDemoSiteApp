@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { fetchArticles } from '../actions/articles';
 import { View, ScrollView } from 'react-native';
 import Subheader from '../components/Subheader';
 import ArticlesTiles from '../components/ArticlesTiles';
@@ -20,12 +19,18 @@ class FrontPage extends Component {
     this.state = {};
   }
 
+  onPressArticle(article) {
+    this.props.navigator.push({ name: 'Article full view', article, index: 1 });
+  }
+
   getLatestArticles(numberOfArticles = 10) {
-    const { articles } = this.props;
+    const { fetchedArticles } = this.props.articles;
     let allArticles = [];
 
-    for (category in articles.fetchedArticles) {
-      allArticles = allArticles.concat(articles.fetchedArticles[category]);
+    for (const category in fetchedArticles) {
+      if ({}.hasOwnProperty.call(fetchedArticles, category)) {
+        allArticles = allArticles.concat(fetchedArticles[category]);
+      }
     }
 
     return {
@@ -34,13 +39,13 @@ class FrontPage extends Component {
     };
   }
 
-  getArticlesByCategory(activeCategory, numberOfArticles = 10) {
+  getArticlesByCategory(activeCategory) {
     const { articles, categories } = this.props;
     const { items } = categories;
 
     return {
       title: items.find(item => item.locationId === activeCategory).name,
-      listItems: articles.fetchedArticles[parseInt(activeCategory)],
+      listItems: articles.fetchedArticles[parseInt(activeCategory, 10)],
     };
   }
 
@@ -56,10 +61,6 @@ class FrontPage extends Component {
     });
   }
 
-  _onPressArticle(article) {
-    this.props.navigator.push({ name: 'Article full view', article, index: 1 });
-  }
-
   render() {
     const { currentlyActive: activeCategory } = this.props.categories;
     const { title, listItems } = !activeCategory
@@ -69,17 +70,20 @@ class FrontPage extends Component {
     return (
       <View style={{ flex: 1 }}>
         <Subheader
-          title={title.toUpperCase()} />
+          title={title.toUpperCase()}
+        />
         <ScrollView>
-          { !activeCategory
-              ? <ArticlesTiles
-                  articles={listItems.splice(0,3)}
-                  onPressArticle={this._onPressArticle.bind(this)} />
-              : null }
-          { !activeCategory ? <Subheader title='More news' /> : null }
+          { !activeCategory &&
+            <ArticlesTiles
+              articles={listItems.splice(0, 3)}
+              onPressArticle={this.onPressArticle.bind(this)}
+            />
+          }
+          { !activeCategory && <Subheader title="More news" /> }
           <ArticlesListView
             articles={listItems}
-            onPressArticle={this._onPressArticle.bind(this)} />
+            onPressArticle={this.onPressArticle.bind(this)}
+          />
         </ScrollView>
       </View>
     );

@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import Icon  from 'react-native-vector-icons/Entypo';
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
 
-
+const netgenLogo = require('../../assets/logo_simple.png');
 
 const styles = StyleSheet.create({
   header: {
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   rightItem: {
     marginRight: 10,
-    transform: [{ rotate: '90deg' }]
+    transform: [{ rotate: '90deg' }],
   },
 });
 
@@ -47,16 +47,20 @@ export default class Header extends Component {
           <Icon
             name={leftIcon}
             size={40}
-            color='#fff'
-            style={styles.leftItem} />
+            color="#fff"
+            style={styles.leftItem}
+          />
         </TouchableOpacity>
-        <Image style={styles.centerItem}
-          source={require('../../assets/logo_simple.png')} />
+        <Image
+          style={styles.centerItem}
+          source={netgenLogo}
+        />
         <Icon
-          name='magnifying-glass'
+          name="magnifying-glass"
           size={32}
-          color='#fff'
-          style={styles.rightItem} />
+          color="#fff"
+          style={styles.rightItem}
+        />
       </View>
     );
   }

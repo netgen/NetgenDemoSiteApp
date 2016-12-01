@@ -21,7 +21,7 @@ export default class NetgenRestClient {
   }
 
   async getArticleByID(objectID, imageVariation) {
-    if (!objectID) throw "Object ID not defined";
+    if (!objectID) throw new Error('Object ID not defined');
 
     const { Content: article } = await this._fetchObjectByID(objectID);
     const image = await this.getArticleImageUrl(article, imageVariation);
@@ -29,13 +29,13 @@ export default class NetgenRestClient {
     return {
       [article.Name]: {
         content: article,
-        image: image,
-      }
+        image,
+      },
     };
   }
 
   getArticlesImageUrls(articles, variation = 'i320') {
-    let imagePromises = articles.map((article) => {
+    const imagePromises = articles.map((article) => {
       return this.getArticleImageUrl(article, variation);
     }, this);
 
@@ -61,42 +61,41 @@ export default class NetgenRestClient {
   }
 
   async getCategories(siteInfoContentID) {
-    if (!siteInfoContentID) throw "Site info content ID not provided";
+    if (!siteInfoContentID) throw new Error('Site info content ID not provided');
 
     const { Content: siteInfo } = await this._fetchObjectByID(siteInfoContentID);
     const mainMenuItems = siteInfo.CurrentVersion.Version.Fields.field.find(el => el.fieldDefinitionIdentifier === 'main_menu').fieldValue;
     const categories = await this._fetchCategories(mainMenuItems.destinationContentIds);
 
     return categories.map(category => ({
-        name: category.Content.Name,
-        locationId: /[^/]*$/.exec(category.Content.MainLocation._href)[0], // Grabs string after last dash
-        mainLocation: category.Content.MainLocation._href,
-      })
-    );
+      name: category.Content.Name,
+      locationId: /[^/]*$/.exec(category.Content.MainLocation._href)[0], // Grabs string after last dash
+      mainLocation: category.Content.MainLocation._href,
+    }));
   }
 
   async _fetchArticles(numberOfItems = 10, parentLocationID, contentTypes = ['ng_news', 'ng_article', 'ng_blog_post', 'ng_video']) {
     const requestUrl = `${this.endPointUrl}${this.apiPath}views`;
-    const criterionObject = parentLocationID ? { "SubtreeCriterion": `/1/2/${parentLocationID}/` } : {};
+    const criterionObject = parentLocationID ? { SubtreeCriterion: `/1/2/${parentLocationID}/` } : {};
     const contentTypeCriterion = this._buildContentTypeCriterion(contentTypes, criterionObject);
 
     const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
-        'Accept': `${this.acceptHeader}View+json; version=1.1`,
-        'Content-Type': `${this.acceptHeader}ViewInput+json; version=1.1`
+        Accept: `${this.acceptHeader}View+json; version=1.1`,
+        'Content-Type': `${this.acceptHeader}ViewInput+json; version=1.1`,
       },
       body: JSON.stringify({
-          "ViewInput": {
-            "identifier": 'fetch_articles_view',
-            "ContentQuery": {
-              "Criteria": contentTypeCriterion,
-              "limit": numberOfItems,
-              "offset": "0",
-              "SortClauses": { "DatePublished": "descending" }
-            }
-          }
-        })
+        ViewInput: {
+          identifier: 'fetch_articles_view',
+          ContentQuery: {
+            Criteria: contentTypeCriterion,
+            limit: numberOfItems,
+            offset: '0',
+            SortClauses: { DatePublished: 'descending' },
+          },
+        },
+      }),
     });
 
     return response.json();
@@ -107,7 +106,7 @@ export default class NetgenRestClient {
     const response = await fetch(requestUrl, {
       method: 'GET',
       headers: {
-        'Accept': `${this.acceptHeader}Content+json`,
+        Accept: `${this.acceptHeader}Content+json`,
       },
     });
 
@@ -121,7 +120,7 @@ export default class NetgenRestClient {
     const response = await fetch(requestUrl, {
       method: 'GET',
       headers: {
-        'Accept': `${this.acceptHeader}ContentImageVariation+json`,
+        Accept: `${this.acceptHeader}ContentImageVariation+json`,
       },
     });
 
@@ -129,7 +128,7 @@ export default class NetgenRestClient {
   }
 
   async _fetchImage(imageUri) {
-    if (!imageUri) throw "Image uri not defined";
+    if (!imageUri) throw new Error('Image uri not defined');
 
     const requestUrl = `${this.endPointUrl}${imageUri}`;
     const response = await fetch(requestUrl, {
@@ -144,18 +143,19 @@ export default class NetgenRestClient {
 
   _fetchCategories(destinationContentIds) {
     const categoriesPromises = destinationContentIds.map((contentID) => {
-        return this._fetchObjectByID(contentID);
+      return this._fetchObjectByID(contentID);
     }, this);
 
     return Promise.all(categoriesPromises);
   }
 
   _buildContentTypeCriterion(contentTypes, criterionObject = {}) {
-      if (!contentTypes.length) return criterionObject;
+    if (!contentTypes.length) return criterionObject;
+    const contentTypeCriterion = criterionObject;
 
-      criterionObject.OR = {};
-      criterionObject.OR.ContentTypeIdentifierCriterion = contentTypes.shift();
-      criterionObject.OR = this._buildContentTypeCriterion(contentTypes, criterionObject.OR);
-      return criterionObject;
+    contentTypeCriterion.OR = {};
+    contentTypeCriterion.OR.ContentTypeIdentifierCriterion = contentTypes.shift();
+    contentTypeCriterion.OR = this._buildContentTypeCriterion(contentTypes, contentTypeCriterion.OR);
+    return contentTypeCriterion;
   }
 }

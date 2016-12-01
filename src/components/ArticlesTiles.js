@@ -37,31 +37,16 @@ export default class ArticlesTiles extends Component {
   /* TODO: In future consider making separate component for full screen tile
     and two column tiles
   */
-  render() {
-    const { articles } = this.props;
-    const [
-      fullScreenTiles,
-      twoColumnTiles
-    ] = [ articles.slice(0,1), articles.slice(1) ];
-
-    return (
-      <View>
-        { fullScreenTiles.map(article => this._renderFullScreenTile(article)) }
-        <View style={{ flexDirection: 'row' }}>
-          { twoColumnTiles.map(article => this._renderTwoColumnTiles(article)) }
-        </View>
-      </View>
-    );
-  }
-
-  _renderFullScreenTile(article) {
+  renderFullScreenTile(article) {
     return (
       <TouchableOpacity
         key={article.content._id}
-        onPress={() => this.props.onPressArticle(article)} >
+        onPress={() => this.props.onPressArticle(article)}
+      >
         <Image
           style={styles.fullScreenWidthImage}
-          source={{ uri: article.image }} >
+          source={{ uri: article.image }}
+        >
           <Text style={[styles.heading, styles.font]}>
             { article.name.trim() }
           </Text>
@@ -70,19 +55,38 @@ export default class ArticlesTiles extends Component {
     );
   }
 
-  _renderTwoColumnTiles(article) {
+  renderTwoColumnTiles(article) {
     return (
       <TouchableOpacity
         key={article.content._id}
         onPress={() => this.props.onPressArticle(article)}
-        style={styles.twoColumnContainer} >
+        style={styles.twoColumnContainer}
+      >
         <Image
           style={{ height: 90 }}
-          source={{ uri: article.image }} />
+          source={{ uri: article.image }}
+        />
         <Text style={[styles.font, { color: '#fff' }]}>
           { article.name.trim() }
         </Text>
       </TouchableOpacity>
+    );
+  }
+
+  render() {
+    const { articles } = this.props;
+    const [
+      fullScreenTiles,
+      twoColumnTiles,
+    ] = [articles.slice(0, 1), articles.slice(1)];
+
+    return (
+      <View>
+        { fullScreenTiles.map(article => this.renderFullScreenTile(article)) }
+        <View style={{ flexDirection: 'row' }}>
+          { twoColumnTiles.map(article => this.renderTwoColumnTiles(article)) }
+        </View>
+      </View>
     );
   }
 }

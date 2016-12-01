@@ -36,32 +36,22 @@ export default class ArticlesListView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
     };
   }
 
   componentWillReceiveProps(nextProps) {
     const data = nextProps.articles;
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(data)
+      dataSource: this.state.dataSource.cloneWithRows(data),
     });
   }
 
-  render() {
-    return (
-      <ListView
-        dataSource={this.state.dataSource}
-        enableEmptySections={true}
-        renderRow={this._renderRow.bind(this)}
-        renderSeparator={this._renderSeparator} />
-    );
-  }
-
-  _renderRow(rowData, sectionID, rowID) {
+  renderRow(rowData) {
     return (
       <TouchableOpacity onPress={() => this.props.onPressArticle(rowData)}>
         <View style={styles.row}>
-          <Image key={rowData.image} style={styles.image} source={{ uri: rowData.image }}></Image>
+          <Image key={rowData.image} style={styles.image} source={{ uri: rowData.image }} />
           <Text style={styles.text}>
             {rowData.name}
           </Text>
@@ -70,7 +60,7 @@ export default class ArticlesListView extends Component {
     );
   }
 
-  _renderSeparator(sectionID, rowID) {
+  renderSeparator(sectionID, rowID) {
     return (
       <View
         key={`${rowID}`}
@@ -78,6 +68,17 @@ export default class ArticlesListView extends Component {
           height: 1,
           backgroundColor: '#CCCCCC',
         }}
+      />
+    );
+  }
+
+  render() {
+    return (
+      <ListView
+        dataSource={this.state.dataSource}
+        enableEmptySections
+        renderRow={this.renderRow.bind(this)}
+        renderSeparator={this.renderSeparator}
       />
     );
   }

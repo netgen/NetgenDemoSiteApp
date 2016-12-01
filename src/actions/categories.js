@@ -8,7 +8,7 @@ export const CHANGE_CATEGORY = 'CHANGE_CATEGORY';
 const ngRestCAPI = new NetgenRestClient({ endPointUrl: 'http://example.com' });
 
 export function fetchCategories(siteInfoContentID) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       const categories = await ngRestCAPI.getCategories(siteInfoContentID);
       dispatch({ type: FETCH_CATEGORIES_SUCCESS, categories });
@@ -19,5 +19,5 @@ export function fetchCategories(siteInfoContentID) {
 }
 
 export function changeCategory(category) {
-  return { type: CHANGE_CATEGORY, category }
+  return { type: CHANGE_CATEGORY, category };
 }

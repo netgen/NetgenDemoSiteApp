@@ -12,7 +12,7 @@ export default function (state = INITIAL_STATE, action) {
     case types.FETCH_CATEGORIES_SUCCESS: {
       return {
         ...state,
-        items: action.categories
+        items: action.categories,
       };
     }
     case types.FETCH_CATEGORIES_FAILURE: {

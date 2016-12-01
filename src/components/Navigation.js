@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Drawer from 'react-native-drawer';
-import SideNavigationMenu from './SideNavigationMenu';
 import { Navigator } from 'react-native';
+import SideNavigationMenu from './SideNavigationMenu';
 import FrontPage from '../containers/FrontPage';
 import FullView from '../containers/FullView';
 
@@ -19,13 +19,29 @@ export default class SideNavigation extends Component {
     this.state = { isMenuOpened: false };
   }
 
+  renderScene(route, navigator) {
+    if (route.article) {
+      return (
+        <FullView
+          article={route.article}
+          navigator={navigator}
+        />
+      );
+    }
+    return (
+      <FrontPage
+        navigator={navigator}
+      />
+    );
+  }
+
   render() {
     const { isOpen, categories, onChangeCategory, language } = this.props;
     const drawerStyles = {
       drawer: {
-        backgroundColor: '#403e41'
-      }
-    }
+        backgroundColor: '#403e41',
+      },
+    };
 
     return (
       <Drawer
@@ -39,35 +55,21 @@ export default class SideNavigation extends Component {
               this.refs.navigator.popToTop();
               onChangeCategory(category);
             }}
-            language={language || 'English'} />
+            language={language || 'English'}
+          />
         }
         openDrawerOffset={0.18}
-        styles={drawerStyles} >
+        styles={drawerStyles}
+      >
 
         <Navigator
           ref="navigator"
           initialRoute={{ name: 'Articles list', index: 0 }}
           renderScene={this.renderScene}
-          configureScene={(route, routeStack) =>
-            Navigator.SceneConfigs.FadeAndroid} />
+          configureScene={() => Navigator.SceneConfigs.FadeAndroid}
+        />
 
       </Drawer>
     );
-  }
-
-  renderScene(route, navigator) {
-    if (route.article) {
-      return (
-        <FullView
-          article={route.article}
-          navigator={navigator} />
-      );
-    }
-    else {
-      return (
-        <FrontPage
-          navigator={navigator} />
-      );
-    }
   }
 }

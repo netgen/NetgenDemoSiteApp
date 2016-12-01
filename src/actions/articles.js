@@ -11,6 +11,15 @@ export const FETCH_ARTICLES_FAILURE = 'FETCH_ARTICLES_FAILURE';
 
 const ngRestCAPI = new NetgenRestClient({ endPointUrl: 'http://example.com' });
 
+function shouldFetch(state, parentLocationID) {
+  const articles = state.articles;
+
+  if (!articles) return true;
+  if (articles.isFetching[parentLocationID]) return false;
+  if (!articles.fetchedArticles[parentLocationID]) return true;
+  return true;
+}
+
 export function fetchArticles(numberOfArticles, parentLocationID, contentTypes, imageVariation) {
   return async (dispatch, getState) => {
     if (!shouldFetch(getState(), parentLocationID)) return;
@@ -37,14 +46,4 @@ export function fetchArticleByID(id) {
       dispatch({ type: FETCH_ARTICLE_BY_ID_FAILURE, error });
     }
   };
-}
-
-
-function shouldFetch(state, parentLocationID) {
-  const articles = state.articles;
-
-  if (!articles) return true;
-  if (articles.isFetching[parentLocationID]) return false;
-  if (!articles.fetchedArticles[parentLocationID]) return true;
-  return true;
 }
