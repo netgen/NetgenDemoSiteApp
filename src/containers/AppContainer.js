@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { fetchCategories, changeCategory } from '../actions/categories';
 import { fetchArticles } from '../actions/articles';
@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+const appBackgroundColor = '#ef4134';
 
 class AppContainer extends Component {
   static propTypes = {
@@ -61,13 +63,18 @@ class AppContainer extends Component {
 
     return (
       <View style={styles.container}>
+        <StatusBar
+          hidden
+          backgroundColor={appBackgroundColor}
+          barStyle="light-content"
+        />
         <Header
           isMenuOpened={this.state.menuOpened}
           onPressMenu={this.onPressMenu.bind(this)}
         />
         <Spinner
           visible={!this.state.appLoaded}
-          overlayColor="#ef4134"
+          overlayColor={appBackgroundColor}
         />
         <Navigation
           ref="navigation"
