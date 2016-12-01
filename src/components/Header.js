@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
-const netgenLogo = require('../../assets/logo_simple.png');
+const netgenLogo = require('../../assets/logo_simple_2.png');
 
 const styles = StyleSheet.create({
   header: {
@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   centerItem: {
-    height: 50,
-    width: 50,
+    height: 40,
+    width: 114,
   },
   rightItem: {
     marginRight: 10,
