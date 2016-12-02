@@ -61,7 +61,11 @@ class ArticleScreen extends Component {
 
   // filter out some xml tags
   filteredArticleBody() {
-    return this.articleContent('body').fieldValue.xml
+    const articleBody = this.articleContent('body');
+
+    if (!articleBody) return '';
+
+    return articleBody.fieldValue.xml
       .replace(/<\/?(?:(?!bold|italic|break|link|paragraph|header).)*?\/?>/ig, '')
       .replace(/(<\/?)([a-z]*)/ig, this.replaceXmlTagsWithHtml)
       .replace(/(url)(=)/ig, 'href$2');
@@ -109,6 +113,27 @@ class ArticleScreen extends Component {
     );
   }
 
+  renderWebViewContent(customHtml) {
+    return (
+      <WebView
+        ref="Webview"
+        source={{
+          html: `<!DOCTYPE html>\n<html><body> ${customHtml} ${heightScript} </body></html>`,
+        }}
+        style={{ marginLeft: 3, height: Number(this.state.height) + 30 }}
+        scrollEnabled={false}
+        startInLoadingState={false}
+        onShouldStartLoadWithRequest={this.openExternalLinkIfNeeded}
+        onNavigationStateChange={(navState) => {
+          this.setState({ height: navState.title });
+          if (Platform.OS === 'android') {
+            this.openExternalLinkIfNeeded(navState);
+          }
+        }}
+      />
+    );
+  }
+
   render() {
     const { article } = this.props;
     const customHtml = this.filteredArticleBody();
@@ -127,22 +152,7 @@ class ArticleScreen extends Component {
             source={{ uri: article.image }}
             style={styles.fullScreenWidthImage}
           />
-          <WebView
-            ref="Webview"
-            source={{
-              html: `<!DOCTYPE html>\n<html><body> ${customHtml} ${heightScript} </body></html>`,
-            }}
-            style={{ marginLeft: 3, height: Number(this.state.height) + 30 }}
-            scrollEnabled={false}
-            startInLoadingState={false}
-            onShouldStartLoadWithRequest={this.openExternalLinkIfNeeded}
-            onNavigationStateChange={(navState) => {
-              this.setState({ height: navState.title });
-              if (Platform.OS === 'android') {
-                this.openExternalLinkIfNeeded(navState);
-              }
-            }}
-          />
+          { !!customHtml && this.renderWebViewContent(customHtml) }
         </ScrollView>
       </View>
     );
