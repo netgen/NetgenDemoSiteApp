@@ -71,15 +71,15 @@ class AppContainer extends Component {
           isMenuOpened={this.state.menuOpened}
           onPressMenu={this.onPressMenu.bind(this)}
         />
-        <Spinner
-          visible={!this.state.appLoaded}
-          overlayColor={appBackgroundColor}
-        />
         <Navigation
           ref="navigation"
           isOpen={this.state.menuOpened}
           categories={categories.items}
           onChangeCategory={this.onChangeCategory.bind(this)}
+        />
+        <Spinner
+          visible={!this.state.appLoaded}
+          overlayColor={appBackgroundColor}
         />
       </View>
     );
