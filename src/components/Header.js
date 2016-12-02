@@ -1,5 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 const netgenLogo = require('../../assets/logo_simple_2.png');
@@ -7,6 +12,7 @@ const netgenLogo = require('../../assets/logo_simple_2.png');
 const styles = StyleSheet.create({
   header: {
     height: 70,
+    paddingTop: Platform.OS === 'ios' ? 20 : 0,
     backgroundColor: '#ef4134',
     flexDirection: 'row',
     justifyContent: 'space-between',

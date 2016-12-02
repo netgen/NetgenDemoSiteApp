@@ -64,7 +64,6 @@ class AppContainer extends Component {
     return (
       <View style={styles.container}>
         <StatusBar
-          hidden
           backgroundColor={appBackgroundColor}
           barStyle="light-content"
         />
