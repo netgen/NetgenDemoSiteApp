@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });
 

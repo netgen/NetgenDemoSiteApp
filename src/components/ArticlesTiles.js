@@ -6,7 +6,7 @@ import TwoColumnTile from './TwoColumnTile';
 const styles = StyleSheet.create({
   font: {
     fontFamily: (Platform.OS === 'ios') ? 'Helvetica' : 'Roboto',
-    fontWeight: '500',
+    fontWeight: '600',
     margin: 10,
   },
   flexRow: {

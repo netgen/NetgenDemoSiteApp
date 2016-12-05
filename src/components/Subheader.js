@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#333',
-    fontWeight: '500',
-    fontSize: 10,
+    fontWeight: '600',
+    fontSize: 12,
     fontFamily: (Platform.OS === 'ios') ? 'Helvetica' : 'Roboto',
   },
   verticalAlignment: {
@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   leftMargin: {
-    marginLeft: 10,
+    marginLeft: 5,
   },
   rightMargin: {
-    marginRight: 10,
+    marginRight: 5,
   },
 });
 
@@ -35,7 +35,7 @@ export default class Subheader extends Component {
 
   renderTitle() {
     return (
-      <Text style={[styles.title, styles.leftMargin]}>
+      <Text style={[styles.title, { marginLeft: 10 }]}>
         { this.props.title.toUpperCase() }
       </Text>
     );
@@ -47,7 +47,7 @@ export default class Subheader extends Component {
         onPress={() => this.props.onPressBackBtn()}
         style={styles.verticalAlignment}
       >
-        <Icon name="chevron-left" size={12} style={styles.leftMargin} />
+        <Icon name="chevron-left" size={22} style={styles.leftMargin} />
         <Text style={[styles.title]}>BACK</Text>
       </TouchableOpacity>
     );
@@ -56,7 +56,7 @@ export default class Subheader extends Component {
   renderShareButton() {
     return (
       <TouchableOpacity>
-        <Icon name="share" size={12} style={styles.rightMargin} />
+        <Icon name="share" size={22} style={styles.rightMargin} />
       </TouchableOpacity>
     );
   }
