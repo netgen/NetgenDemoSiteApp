@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import {
   View,
   Text,
@@ -24,23 +24,19 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SideNavigationItem extends Component {
-  static propTypes = {
-    item: PropTypes.object.isRequired,
-    changeCategory: PropTypes.func.isRequired,
-  };
+const SideNavigationItem = ({ item, changeCategory }) => (
+  <TouchableOpacity onPress={() => changeCategory(item.locationId)}>
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemText}>
+        { item.name.toUpperCase() }
+      </Text>
+    </View>
+  </TouchableOpacity>
+);
 
-  render() {
-    const { item, changeCategory } = this.props;
+SideNavigationItem.propTypes = {
+  item: PropTypes.object.isRequired,
+  changeCategory: PropTypes.func.isRequired,
+};
 
-    return (
-      <TouchableOpacity onPress={() => changeCategory(item.locationId)}>
-        <View style={styles.itemContainer}>
-          <Text style={styles.itemText}>
-            { item.name.toUpperCase() }
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-}
+export default SideNavigationItem;
