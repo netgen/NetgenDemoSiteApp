@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
 
 const SingleColumnTile = ({ article, onPressArticle, fontStyle }) => (
   <TouchableOpacity
-    key={article.content._id}
     onPress={() => onPressArticle(article)}
   >
     <Image

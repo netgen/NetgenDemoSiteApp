@@ -25,6 +25,7 @@ const ArticlesTiles = ({ articles, onPressArticle }) => {
       {
         fullScreenTiles.map(article => (
           <SingleColumnTile
+            key={article.content._id}
             article={article}
             onPressArticle={onPressArticle}
             fontStyle={styles.font}
@@ -35,6 +36,7 @@ const ArticlesTiles = ({ articles, onPressArticle }) => {
         {
           twoColumnTiles.map(article => (
             <TwoColumnTile
+              key={article.content._id}
               article={article}
               onPressArticle={onPressArticle}
               fontStyle={styles.font}

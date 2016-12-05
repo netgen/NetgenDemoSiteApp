@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
 
 const TwoColumnTile = ({ article, onPressArticle, fontStyle }) => (
   <TouchableOpacity
-    key={article.content._id}
     onPress={() => onPressArticle(article)}
     style={styles.tile}
   >
