@@ -1,4 +1,4 @@
-import NetgenRestClient from '../NetgenRestClient';
+import restEndpoint from '../RestEndpoint';
 
 export const FETCH_ARTICLE_BY_ID_REQUEST = 'FETCH_ARTICLE_BY_ID_REQUEST';
 export const FETCH_ARTICLE_BY_ID_SUCCESS = 'FETCH_ARTICLE_BY_ID_SUCCESS';
@@ -8,8 +8,6 @@ export const FETCH_ARTICLES_REQUEST = 'FETCH_ARTICLES_REQUEST';
 export const FETCH_ARTICLES_SUCCESS = 'FETCH_ARTICLES_SUCCESS';
 export const FETCH_ARTICLES_FAILURE = 'FETCH_ARTICLES_FAILURE';
 
-
-const ngRestCAPI = new NetgenRestClient({ endPointUrl: 'http://example.com' });
 
 function shouldFetch(state, parentLocationID) {
   const articles = state.articles;
@@ -26,7 +24,7 @@ export function fetchArticles(numberOfArticles, parentLocationID, contentTypes, 
 
     dispatch({ type: FETCH_ARTICLES_REQUEST, parentLocationID });
     try {
-      const articles = await ngRestCAPI.getArticles(numberOfArticles, parentLocationID, contentTypes, imageVariation);
+      const articles = await restEndpoint.getArticles(numberOfArticles, parentLocationID, contentTypes, imageVariation);
       dispatch({ type: FETCH_ARTICLES_SUCCESS, articles, parentLocationID });
     } catch (error) {
       dispatch({ type: FETCH_ARTICLES_FAILURE, error });
@@ -40,7 +38,7 @@ export function fetchArticleByID(id) {
 
     dispatch({ type: FETCH_ARTICLE_BY_ID_REQUEST });
     try {
-      const { Content: article } = await ngRestCAPI.getArticleByID(id);
+      const { Content: article } = await restEndpoint.getArticleByID(id);
       dispatch({ type: FETCH_ARTICLE_BY_ID_SUCCESS, article });
     } catch (error) {
       dispatch({ type: FETCH_ARTICLE_BY_ID_FAILURE, error });

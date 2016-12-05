@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet, StatusBar } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { siteInfoContentID, articlesPerCategory, contentTypes } from '../../ngdemoappconfig';
 import { fetchCategories, changeCategory } from '../actions/categories';
 import { fetchArticles } from '../actions/articles';
 import Header from '../components/Header';
@@ -29,7 +30,7 @@ class AppContainer extends Component {
       appLoaded: false,
       menuOpened: false,
     };
-    props.dispatch(fetchCategories(63));
+    props.dispatch(fetchCategories(siteInfoContentID));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -40,7 +41,7 @@ class AppContainer extends Component {
     // If categories have been fetched
     if (numOfCategories && numOfCategories !== this.props.categories.items.length) {
       for (let i = 0; i < numOfCategories; i++) {
-        dispatch(fetchArticles(10, categories[i].locationId));
+        dispatch(fetchArticles(articlesPerCategory, categories[i].locationId, contentTypes));
       }
     }
 

@@ -1,16 +1,14 @@
-import NetgenRestClient from '../NetgenRestClient';
+import restEndpoint from '../RestEndpoint';
 
 export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
 export const FETCH_CATEGORIES_FAILURE = 'FETCH_CATEGORIES_FAILURE';
 export const CHANGE_CATEGORY = 'CHANGE_CATEGORY';
 
 
-const ngRestCAPI = new NetgenRestClient({ endPointUrl: 'http://example.com' });
-
 export function fetchCategories(siteInfoContentID) {
   return async (dispatch) => {
     try {
-      const categories = await ngRestCAPI.getCategories(siteInfoContentID);
+      const categories = await restEndpoint.getCategories(siteInfoContentID);
       dispatch({ type: FETCH_CATEGORIES_SUCCESS, categories });
     } catch (error) {
       dispatch({ type: FETCH_CATEGORIES_FAILURE, error });
