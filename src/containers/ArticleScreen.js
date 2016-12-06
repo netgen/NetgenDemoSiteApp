@@ -9,6 +9,7 @@ import {
   Linking,
   WebView } from 'react-native';
 import Subheader from '../components/Subheader';
+import ArticleMetadata from '../components/ArticleMetadata';
 
 
 const heightScript = '<script>window.location.hash = 1;document.title = (document.height !== undefined) ? document.height : document.body.offsetHeight;</script>';
