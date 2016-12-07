@@ -10,9 +10,25 @@ import {
   WebView } from 'react-native';
 import Subheader from '../components/Subheader';
 import ArticleMetadata from '../components/ArticleMetadata';
+import { replaceXmlTagsWithHtml } from '../utils/helper';
 
 
-const heightScript = '<script>window.location.hash = 1;document.title = (document.height !== undefined) ? document.height : document.body.offsetHeight;</script>';
+const heightScript = {
+  ios: '(document.height !== undefined) ? document.height : document.body.offsetHeight;',
+  android: `<script>
+    document.title = (document.height !== undefined) ? document.height : document.body.offsetHeight;
+  </script>
+  `,
+};
+
+const webviewStyle = `<style>
+  body {
+    font-family: Sans-Serif;
+  }
+  a {
+    color: #ef4134;
+  }
+</style>`;
 
 const styles = StyleSheet.create({
   container: {
@@ -31,7 +47,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '600',
     fontFamily: (Platform.OS === 'ios') ? 'Helvetica' : 'Roboto',
   },
 });
@@ -44,13 +60,51 @@ class ArticleScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      height: 100,
-    };
+    this.state = { height: 100 };
   }
 
   onPressBackBtn() {
     this.props.navigator.pop();
+  }
+
+  /*
+    iOS specific method.
+    Return value defines whether WebView should try to load the source inside the app.
+  */
+  onShouldStartLoadWithRequest(navState) {
+    if (this.isExternalUrl(navState.url)) {
+      this.openExternalLink(navState.url);
+      return false;
+    }
+
+    return true;
+  }
+
+  /*
+    Handles height change.
+    Also, handles opening external link in browser for Androids.
+  */
+  onNavigationStateChange(navState) {
+    const isIOS = (Platform.OS === 'ios');
+    const height = isIOS ? Number(navState.jsEvaluationValue) : Number(navState.title);
+
+    if (this.isExternalUrl(navState.url)) {
+      !isIOS && this.openExternalLink(navState.url);
+      return;
+    }
+
+    if (height && height !== this.state.height) {
+      this.setState({ height });
+    }
+  }
+
+  openExternalLink(url) {
+    this.refs.Webview.stopLoading();
+    Linking.openURL(url);
+  }
+
+  isExternalUrl(url) {
+    return (url.startsWith('http://') || url.startsWith('https://'));
   }
 
   articleContent(fieldIdentifier) {
@@ -60,7 +114,6 @@ class ArticleScreen extends Component {
     );
   }
 
-  // filter out some xml tags
   filteredArticleBody() {
     const articleBody = this.articleContent('body');
 
@@ -68,69 +121,35 @@ class ArticleScreen extends Component {
 
     return articleBody.fieldValue.xml
       .replace(/<\/?(?:(?!bold|italic|break|link|paragraph|header).)*?\/?>/ig, '')
-      .replace(/(<\/?)([a-z]*)/ig, this.replaceXmlTagsWithHtml)
+      .replace(/(<\/?)([a-z]*)/ig, replaceXmlTagsWithHtml)
       .replace(/(url)(=)/ig, 'href$2');
   }
 
-  replaceXmlTagsWithHtml(match, tag, keyWord) {
-    switch (keyWord) {
-      case 'header': return `${tag}h2`;
-      case 'link': return `${tag}a`;
-      case 'break': return `${tag}br`;
-      default: return `${tag}${keyWord.substring(0, 1)}`;
-    }
-  }
-
   /*
-    onShouldStartLoadWithRequest is iOS specific. Thats why this method is being called
-    on navigation state change for Android.
+    Note: Script that reinitialize webviews height had to be put customly in html
+    for Androids, because jsEvaluationValue property does not exist in navigation state.
   */
-  openExternalLinkIfNeeded(navState) {
-    const url = navState.url;
-
-    /* Return value defines whether WebView should try to load the source inside the app*/
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      Linking.openURL(url);
-      return Platform.OS === 'android' ? this.refs.Webview.stopLoading() : false;
-    }
-
-    return true;
-  }
-
-  renderMetadata() {
-    const author = this.articleContent('author_override');
-    const publishDate = this.articleContent('publish_date');
-
-    if (!author && !publishDate) return null;
-
-    return (
-      <View style={{ flexDirection: 'row', marginTop: 10 }}>
-        <Text style={{ color: '#ef4134' }}>{ author ? author.fieldValue : null }</Text>
-        <Text style={{ flex: 1 }}>
-          { (author && author.fieldValue) ? ' | ' : null }
-          { publishDate ? new Date(publishDate.fieldValue.rfc850).toLocaleDateString('hr') : null }
-        </Text>
-      </View>
-    );
-  }
-
   renderWebViewContent(customHtml) {
+    const webviewHtml = customHtml + (Platform.OS === 'android' ? heightScript.android : '');
+
     return (
       <WebView
         ref="Webview"
         source={{
-          html: `<!DOCTYPE html>\n<html><body> ${customHtml} ${heightScript} </body></html>`,
+          html:
+          `<!DOCTYPE html>\n
+            <html>
+              <head> ${webviewStyle} </head>
+              <body> ${webviewHtml} </body>
+            </html>`,
         }}
         style={{ marginLeft: 3, height: Number(this.state.height) + 30 }}
         scrollEnabled={false}
         startInLoadingState={false}
-        onShouldStartLoadWithRequest={this.openExternalLinkIfNeeded}
-        onNavigationStateChange={(navState) => {
-          this.setState({ height: navState.title });
-          if (Platform.OS === 'android') {
-            this.openExternalLinkIfNeeded(navState);
-          }
-        }}
+        javaScriptEnabled
+        injectedJavaScript={Platform.OS === 'ios' ? heightScript.ios : ''}
+        onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest.bind(this)}
+        onNavigationStateChange={this.onNavigationStateChange.bind(this)}
       />
     );
   }
@@ -147,7 +166,10 @@ class ArticleScreen extends Component {
         <ScrollView>
           <View style={styles.header}>
             <Text style={styles.title}>{ article.name.trim() }</Text>
-            { this.renderMetadata() }
+            <ArticleMetadata
+              author={this.articleContent('author_override')}
+              publishDate={this.articleContent('publish_date')}
+            />
           </View>
           <Image
             source={{ uri: article.image }}
