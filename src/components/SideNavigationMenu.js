@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
   header: {
     color: '#fff',
-    fontWeight: '500',
+    fontWeight: '600',
     marginRight: 20,
   },
 });

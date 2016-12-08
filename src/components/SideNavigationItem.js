@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     color: '#fff',
-    fontWeight: '500',
+    fontWeight: '600',
     fontFamily: (Platform.OS === 'ios') ? 'Helvetica' : 'Roboto',
     marginLeft: 10,
   },
