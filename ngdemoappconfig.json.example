@@ -1,0 +1,11 @@
+{
+    "restEndpointUrl": "http://example.com",
+    "siteInfoContentID": 63,
+    "articlesPerCategory": 10,
+    "contentTypes": [
+        "news",
+        "article",
+        "blog_post",
+        "video"
+    ]
+}
