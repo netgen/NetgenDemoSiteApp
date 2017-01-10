@@ -87,7 +87,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.netgenmoresiteapp"
+        applicationId "com.netgenlabs.demoapp"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -139,7 +139,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 project.ext.vectoricons = [
-    iconFontNames: [ 'Entypo.ttf' ] 
+    iconFontNames: [ 'Entypo.ttf' ]
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

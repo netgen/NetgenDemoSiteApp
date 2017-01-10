@@ -1,4 +1,4 @@
-package com.netgenmoresiteapp;
+package com.netgenlabs.demoapp;
 
 import com.facebook.react.ReactActivity;
 
