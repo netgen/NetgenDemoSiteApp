@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Text,
-  StyleSheet } from 'react-native';
+  StyleSheet,
+  Platform } from 'react-native';
 import SideNavigationItem from './SideNavigationItem';
 
 
@@ -44,7 +45,9 @@ export default class SideNavigationMenu extends Component {
     return (
       <View>
         <View style={styles.headerContainer}>
-          <Text style={styles.header}> {language} </Text>
+          {Platform.OS !== 'ios' &&
+            <Text style={styles.header}> {language} </Text>
+          }
         </View>
         { this.renderItems(menuItems) }
       </View>

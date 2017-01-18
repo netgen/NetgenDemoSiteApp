@@ -67,7 +67,7 @@ export default class Subheader extends Component {
     return (
       <View style={[styles.verticalAlignment, styles.subheader]}>
         { articleFullView ? this.renderBackButton() : this.renderTitle() }
-        { articleFullView ? this.renderShareButton() : null }
+        { (articleFullView && Platform.OS !== 'ios') ? this.renderShareButton() : null }
       </View>
     );
   }

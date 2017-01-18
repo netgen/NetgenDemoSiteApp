@@ -35,9 +35,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   fullScreenWidthImage: {
-    alignSelf: 'stretch',
-    height: 180,
-    opacity: 0.8,
+    height: 200,
   },
   header: {
     marginTop: 20,
