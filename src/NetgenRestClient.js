@@ -34,7 +34,7 @@ export default class NetgenRestClient {
     };
   }
 
-  getArticlesImageUrls(articles, variation = 'i320') {
+  getArticlesImageUrls(articles, variation = 'i480') {
     const imagePromises = articles.map((article) => {
       return this.getArticleImageUrl(article, variation);
     }, this);
