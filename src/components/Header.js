@@ -15,13 +15,17 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 20 : 0,
     backgroundColor: '#ef4134',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   headerIcon: {
     margin: 5,
   },
   centerItem: {
+    alignItems: 'center',
+    paddingRight: 45,
+    flex: 1,
+  },
+  centerImg: {
     height: 30,
     width: 85,
   },
@@ -53,16 +57,12 @@ export default class Header extends Component {
             style={styles.headerIcon}
           />
         </TouchableOpacity>
-        <Image
-          style={styles.centerItem}
-          source={netgenLogo}
-        />
-        <Icon
-          name="magnifying-glass"
-          size={25}
-          color="#fff"
-          style={styles.headerIcon}
-        />
+        <View style={styles.centerItem}>
+          <Image
+            style={styles.centerImg}
+            source={netgenLogo}
+          />
+        </View>
       </View>
     );
   }
